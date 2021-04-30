@@ -1,5 +1,19 @@
-from minsk_compiler.syntax_kind import SyntaxKind
-from minsk_compiler.lexer import Lexer
+from minsk_compiler.syntax_token import SyntaxToken
+from minsk_compiler.syntax_node import SyntaxNode
+from minsk_compiler.parser import Parser
+
+
+def pretty_print(node: SyntaxNode, indent: str = ""):
+    print(indent, end="")
+    print(node.kind(), end="")
+    if isinstance(node, SyntaxToken) and node.value is not None:
+        print(f" {node.value}", end="")
+
+    print()
+    indent += "    "
+    for child in node.children():
+        pretty_print(child, indent)
+
 
 while True:
     try:
@@ -7,9 +21,6 @@ while True:
     except EOFError:
         break
 
-    lexer = Lexer(line)
-    while True:
-        tok = lexer.next_token()
-        if tok.kind == SyntaxKind.END_OF_FILE_TOKEN:
-            break
-        print(str(tok))
+    parser = Parser(line)
+    expression = parser.parse()
+    pretty_print(expression)

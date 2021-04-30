@@ -1,14 +1,15 @@
-from typing import Any
+from typing import Any, Iterable
 from minsk_compiler.syntax_kind import SyntaxKind
+from minsk_compiler.syntax_node import SyntaxNode
 
 
-class SyntaxToken:
-    kind: SyntaxKind
+class SyntaxToken(SyntaxNode):
+    _kind: SyntaxKind
     position: int
     text: str
 
     def __init__(self, kind: SyntaxKind, position: int, text: str, value: Any = None):
-        self.kind = kind
+        self._kind = kind
         self.position = position
         self.text = text
         self.value = value
@@ -18,3 +19,9 @@ class SyntaxToken:
         if self.value is not None:
             out += f" {self.value}"
         return out
+
+    def kind(self) -> SyntaxKind:
+        return self._kind
+
+    def children(self) -> Iterable["SyntaxNode"]:
+        return ()

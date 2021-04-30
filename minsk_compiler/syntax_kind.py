@@ -1,4 +1,5 @@
 from enum import Enum, auto
+from stringcase import pascalcase, lowercase
 
 
 class SyntaxKind(Enum):
@@ -11,5 +12,8 @@ class SyntaxKind(Enum):
     STAR_TOKEN = auto()
     SLASH_TOKEN = auto()
 
+    LITERAL_EXPRESSION = auto()
+    BINARY_EXPRESSION = auto()
+
     def __str__(self) -> str:
-        return self.name
+        return pascalcase(lowercase(self.name))
