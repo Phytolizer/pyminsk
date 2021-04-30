@@ -57,11 +57,27 @@ class Parser:
         return SyntaxTree(self.diagnostics, expression, end_of_file_token)
 
     def _parse_expression(self) -> ExpressionSyntax:
-        left = self._parse_primary_expression()
+        return self._parse_term()
+
+    def _parse_term(self) -> ExpressionSyntax:
+        left = self._parse_factor()
 
         while (
             self._current().kind() == SyntaxKind.PLUS_TOKEN
             or self._current().kind() == SyntaxKind.MINUS_TOKEN
+        ):
+            operator_token = self._next_token()
+            right = self._parse_factor()
+            left = BinaryExpressionSyntax(left, operator_token, right)
+
+        return left
+
+    def _parse_factor(self) -> ExpressionSyntax:
+        left = self._parse_primary_expression()
+
+        while (
+            self._current().kind() == SyntaxKind.STAR_TOKEN
+            or self._current().kind() == SyntaxKind.SLASH_TOKEN
         ):
             operator_token = self._next_token()
             right = self._parse_primary_expression()
