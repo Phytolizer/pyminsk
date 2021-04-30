@@ -1,19 +1,23 @@
 from minsk_compiler.syntax_token import SyntaxToken
 from minsk_compiler.syntax_node import SyntaxNode
 from minsk_compiler.parser import Parser
+from colored import fg, attr
 
 
 def pretty_print(node: SyntaxNode, indent: str = "", is_last: bool = True):
+    print(fg(240), end="")
     print(indent, end="")
     if is_last:
         print("\\..", end="")
     else:
         print("+..", end="")
+    print(attr(0), end="")
     print(node.kind(), end="")
     if isinstance(node, SyntaxToken) and node.value is not None:
         print(f" {node.value}", end="")
 
     print()
+
     if is_last:
         indent += "   "
     else:
