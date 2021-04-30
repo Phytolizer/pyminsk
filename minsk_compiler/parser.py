@@ -1,3 +1,4 @@
+from minsk_compiler.syntax_tree import SyntaxTree
 from minsk_compiler.expression_syntax import ExpressionSyntax
 from minsk_compiler.binary_expression_syntax import BinaryExpressionSyntax
 from minsk_compiler.literal_expression_syntax import LiteralExpressionSyntax
@@ -10,6 +11,7 @@ from minsk_compiler.lexer import Lexer
 class Parser:
     _position: int
     _tokens: Tuple[SyntaxToken, ...]
+    diagnostics: List[str]
 
     def __init__(self, text: str):
         lexer = Lexer(text)
@@ -24,6 +26,7 @@ class Parser:
 
         self._position = 0
         self._tokens = tuple(tokens)
+        self.diagnostics = lexer.diagnostics
 
     def _peek(self, offset: int) -> SyntaxToken:
         index = self._position + offset
@@ -43,12 +46,23 @@ class Parser:
         if self._current().kind() == kind:
             return self._next_token()
 
+        self.diagnostics.append(
+            f"ERROR: Unexpected token <{self._current().kind()}>, expected <{kind}>"
+        )
         return SyntaxToken(kind, self._current().position, "")
 
-    def parse(self) -> ExpressionSyntax:
+    def parse(self) -> SyntaxTree:
+        expression = self._parse_expression()
+        end_of_file_token = self._match_token(SyntaxKind.END_OF_FILE_TOKEN)
+        return SyntaxTree(self.diagnostics, expression, end_of_file_token)
+
+    def _parse_expression(self) -> ExpressionSyntax:
         left = self._parse_primary_expression()
 
-        while self._current().kind() == SyntaxKind.PLUS_TOKEN or self._current().kind() == SyntaxKind.MINUS_TOKEN:
+        while (
+            self._current().kind() == SyntaxKind.PLUS_TOKEN
+            or self._current().kind() == SyntaxKind.MINUS_TOKEN
+        ):
             operator_token = self._next_token()
             right = self._parse_primary_expression()
             left = BinaryExpressionSyntax(left, operator_token, right)

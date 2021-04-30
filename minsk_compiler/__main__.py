@@ -38,5 +38,10 @@ while True:
         break
 
     parser = Parser(line)
-    expression = parser.parse()
-    pretty_print(expression)
+    syntax_tree = parser.parse()
+    pretty_print(syntax_tree.root)
+    if len(syntax_tree.diagnostics) > 0:
+        print(fg(124), end="")
+        for diagnostic in syntax_tree.diagnostics:
+            print(diagnostic)
+        print(attr(0), end="")
