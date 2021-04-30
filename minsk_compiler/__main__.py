@@ -1,3 +1,4 @@
+from minsk_compiler.evaluator import Evaluator
 from minsk_compiler.syntax_token import SyntaxToken
 from minsk_compiler.syntax_node import SyntaxNode
 from minsk_compiler.parser import Parser
@@ -45,3 +46,7 @@ while True:
         for diagnostic in syntax_tree.diagnostics:
             print(diagnostic)
         print(attr(0), end="")
+    else:
+        e = Evaluator(syntax_tree.root)
+        result = e.evaluate()
+        print(result)
