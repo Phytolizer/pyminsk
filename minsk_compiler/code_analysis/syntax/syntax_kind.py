@@ -9,6 +9,7 @@ class SyntaxKind(Enum):
     BAD_TOKEN = auto()
 
     # Regular tokens
+    IDENTIFIER_TOKEN = auto()
     NUMBER_TOKEN = auto()
     WHITESPACE_TOKEN = auto()
     PLUS_TOKEN = auto()
@@ -17,6 +18,10 @@ class SyntaxKind(Enum):
     SLASH_TOKEN = auto()
     OPEN_PARENTHESIS_TOKEN = auto()
     CLOSE_PARENTHESIS_TOKEN = auto()
+
+    # Keywords
+    TRUE_KEYWORD = auto()
+    FALSE_KEYWORD = auto()
 
     # Expression nodes
     LITERAL_EXPRESSION = auto()

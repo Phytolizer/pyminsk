@@ -85,5 +85,10 @@ class Parser:
             expression = self._parse_expression()
             right = self._match_token(SyntaxKind.CLOSE_PARENTHESIS_TOKEN)
             return ParenthesizedExpressionSyntax(left, expression, right)
-        number_token = self._match_token(SyntaxKind.NUMBER_TOKEN)
-        return LiteralExpressionSyntax(number_token)
+        elif self._current().kind() in (SyntaxKind.FALSE_KEYWORD, SyntaxKind.TRUE_KEYWORD):
+            keyword_token = self._next_token()
+            value = keyword_token.kind() == SyntaxKind.TRUE_KEYWORD
+            return LiteralExpressionSyntax(keyword_token, value)
+        else:
+            number_token = self._match_token(SyntaxKind.NUMBER_TOKEN)
+            return LiteralExpressionSyntax(number_token)

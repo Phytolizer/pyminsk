@@ -1,5 +1,6 @@
 from typing import List
 
+from minsk_compiler.code_analysis.syntax import syntax_facts
 from minsk_compiler.code_analysis.syntax.syntax_kind import SyntaxKind
 from minsk_compiler.code_analysis.syntax.syntax_token import SyntaxToken
 
@@ -30,7 +31,7 @@ class Lexer:
             while self._current().isdigit():
                 self._next()
 
-            text = self._text[start: self._position]
+            text = self._text[start:self._position]
             value = int(text)
             return SyntaxToken(SyntaxKind.NUMBER_TOKEN, start, text, value)
         elif self._current().isspace():
@@ -38,8 +39,16 @@ class Lexer:
             while self._current().isspace():
                 self._next()
 
-            text = self._text[start: self._position]
+            text = self._text[start:self._position]
             return SyntaxToken(SyntaxKind.WHITESPACE_TOKEN, start, text)
+        elif self._current().isalpha():
+            start = self._position
+            while self._current().isalpha():
+                self._next()
+
+            text = self._text[start:self._position]
+            kind = syntax_facts.get_keyword_kind(text)
+            return SyntaxToken(kind, start, text)
         elif self._current() == "+":
             tok = SyntaxToken(SyntaxKind.PLUS_TOKEN, self._position, "+")
             self._position += 1

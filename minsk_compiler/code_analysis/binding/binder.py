@@ -33,8 +33,8 @@ class Binder:
             raise Exception(f"unexpected syntax {syntax.kind()}")
 
     def _bind_literal_expression(self, syntax: LiteralExpressionSyntax) -> BoundExpression:
-        value = syntax.literal_token.value
-        if not isinstance(value, int):
+        value = syntax.value
+        if value is None:
             value = 0
         return BoundLiteralExpression(value)
 
@@ -55,7 +55,7 @@ class Binder:
         if bound_operator_kind is None:
             self.diagnostics.append(
                 f"Binary operator '{syntax.operator_token.text}' is not defined for types {bound_left.type()} "
-                "and {bound_right.type()}")
+                f"and {bound_right.type()}")
             return bound_left
         return BoundBinaryExpression(bound_left, bound_operator_kind, bound_right)
 

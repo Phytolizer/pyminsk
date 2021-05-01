@@ -61,8 +61,8 @@ while True:
 
     if show_tree:
         pretty_print(syntax_tree.root)
-    if len(syntax_tree.diagnostics) > 0:
-        for diagnostic in syntax_tree.diagnostics:
+    if len(diagnostics) > 0:
+        for diagnostic in diagnostics:
             console.print(diagnostic, style="red")
     else:
         e = Evaluator(bound_expression)

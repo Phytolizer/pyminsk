@@ -15,3 +15,12 @@ def get_unary_operator_precedence(kind: SyntaxKind) -> int:
         return 3
     else:
         return 0
+
+
+def get_keyword_kind(text: str) -> SyntaxKind:
+    if text == "true":
+        return SyntaxKind.TRUE_KEYWORD
+    elif text == "false":
+        return SyntaxKind.FALSE_KEYWORD
+    else:
+        return SyntaxKind.IDENTIFIER_TOKEN

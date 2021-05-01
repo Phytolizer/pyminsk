@@ -1,4 +1,4 @@
-from typing import cast
+from typing import cast, Any
 
 from minsk_compiler.code_analysis.binding.bound_binary_expression import BoundBinaryExpression
 from minsk_compiler.code_analysis.binding.bound_binary_operator_kind import BoundBinaryOperatorKind
@@ -15,16 +15,17 @@ class Evaluator:
     def __init__(self, root: BoundExpression):
         self._root = root
 
-    def evaluate(self) -> int:
+    def evaluate(self) -> Any:
         return self._evaluate_expression(self._root)
 
-    def _evaluate_expression(self, root: BoundExpression) -> int:
+    def _evaluate_expression(self, root: BoundExpression) -> Any:
         if root.kind() == BoundNodeKind.LITERAL_EXPRESSION:
             root = cast(BoundLiteralExpression, root)
             return root.value
         elif root.kind() == BoundNodeKind.UNARY_EXPRESSION:
             root = cast(BoundUnaryExpression, root)
             operand = self._evaluate_expression(root.operand)
+            assert isinstance(operand, int)
 
             if root.operator_kind == BoundUnaryOperatorKind.IDENTITY:
                 return operand
@@ -37,6 +38,8 @@ class Evaluator:
             root = cast(BoundBinaryExpression, root)
             left = self._evaluate_expression(root.left)
             right = self._evaluate_expression(root.right)
+            assert isinstance(left, int)
+            assert isinstance(right, int)
 
             if root.operator_kind == BoundBinaryOperatorKind.ADDITION:
                 return left + right
