@@ -1,5 +1,5 @@
-from collections import Sequence
 from dataclasses import dataclass
+from typing import Sequence
 
 from minsk.code_analysis.syntax.expression_syntax import ExpressionSyntax
 from minsk.code_analysis.syntax.syntax_kind import SyntaxKind
