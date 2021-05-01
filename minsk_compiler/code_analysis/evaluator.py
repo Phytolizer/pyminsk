@@ -1,55 +1,53 @@
 from typing import cast
 
-from minsk_compiler.code_analysis.syntax.binary_expression_syntax import BinaryExpressionSyntax
-from minsk_compiler.code_analysis.syntax.expression_syntax import ExpressionSyntax
-from minsk_compiler.code_analysis.syntax.literal_expression_syntax import LiteralExpressionSyntax
-from minsk_compiler.code_analysis.syntax.parenthesized_expression_syntax import ParenthesizedExpressionSyntax
-from minsk_compiler.code_analysis.syntax.syntax_kind import SyntaxKind
-from minsk_compiler.code_analysis.syntax.unary_expression_syntax import UnaryExpressionSyntax
+from minsk_compiler.code_analysis.binding.bound_binary_expression import BoundBinaryExpression
+from minsk_compiler.code_analysis.binding.bound_binary_operator_kind import BoundBinaryOperatorKind
+from minsk_compiler.code_analysis.binding.bound_expression import BoundExpression
+from minsk_compiler.code_analysis.binding.bound_literal_expression import BoundLiteralExpression
+from minsk_compiler.code_analysis.binding.bound_node_kind import BoundNodeKind
+from minsk_compiler.code_analysis.binding.bound_unary_expression import BoundUnaryExpression
+from minsk_compiler.code_analysis.binding.bound_unary_operator_kind import BoundUnaryOperatorKind
 
 
 class Evaluator:
-    _root: ExpressionSyntax
+    _root: BoundExpression
 
-    def __init__(self, root: ExpressionSyntax):
+    def __init__(self, root: BoundExpression):
         self._root = root
 
     def evaluate(self) -> int:
         return self._evaluate_expression(self._root)
 
-    def _evaluate_expression(self, root: ExpressionSyntax) -> int:
-        if root.kind() == SyntaxKind.LITERAL_EXPRESSION:
-            root = cast(LiteralExpressionSyntax, root)
-            return root.literal_token.value
-        elif root.kind() == SyntaxKind.UNARY_EXPRESSION:
-            root = cast(UnaryExpressionSyntax, root)
+    def _evaluate_expression(self, root: BoundExpression) -> int:
+        if root.kind() == BoundNodeKind.LITERAL_EXPRESSION:
+            root = cast(BoundLiteralExpression, root)
+            return root.value
+        elif root.kind() == BoundNodeKind.UNARY_EXPRESSION:
+            root = cast(BoundUnaryExpression, root)
             operand = self._evaluate_expression(root.operand)
 
-            if root.operator_token.kind() == SyntaxKind.PLUS_TOKEN:
+            if root.operator_kind == BoundUnaryOperatorKind.IDENTITY:
                 return operand
-            elif root.operator_token.kind() == SyntaxKind.MINUS_TOKEN:
+            elif root.operator_kind == BoundUnaryOperatorKind.NEGATION:
                 return -operand
             else:
-                raise Exception(f"unexpected unary operator {root.operator_token.kind()}")
+                raise Exception(f"unexpected unary operator {root.operator_kind}")
 
-        elif root.kind() == SyntaxKind.BINARY_EXPRESSION:
-            root = cast(BinaryExpressionSyntax, root)
+        elif root.kind() == BoundNodeKind.BINARY_EXPRESSION:
+            root = cast(BoundBinaryExpression, root)
             left = self._evaluate_expression(root.left)
             right = self._evaluate_expression(root.right)
 
-            if root.operator_token.kind() == SyntaxKind.PLUS_TOKEN:
+            if root.operator_kind == BoundBinaryOperatorKind.ADDITION:
                 return left + right
-            elif root.operator_token.kind() == SyntaxKind.MINUS_TOKEN:
+            elif root.operator_kind == BoundBinaryOperatorKind.SUBTRACTION:
                 return left - right
-            elif root.operator_token.kind() == SyntaxKind.STAR_TOKEN:
+            elif root.operator_kind == BoundBinaryOperatorKind.MULTIPLICATION:
                 return left * right
-            elif root.operator_token.kind() == SyntaxKind.SLASH_TOKEN:
+            elif root.operator_kind == BoundBinaryOperatorKind.DIVISION:
                 return left // right
             else:
-                raise Exception(f"unexpected binary operator {root.operator_token.kind()}")
+                raise Exception(f"unexpected binary operator {root.operator_kind}")
 
-        elif root.kind() == SyntaxKind.PARENTHESIZED_EXPRESSION:
-            root = cast(ParenthesizedExpressionSyntax, root)
-            return self._evaluate_expression(root.expression)
         else:
             raise Exception(f"unexpected node {root.kind()}")

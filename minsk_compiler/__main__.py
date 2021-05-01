@@ -1,6 +1,7 @@
 from rich.console import Console
 from rich.style import Style
 
+from minsk_compiler.code_analysis.binding.binder import Binder
 from minsk_compiler.code_analysis.evaluator import Evaluator
 from minsk_compiler.code_analysis.syntax.syntax_node import SyntaxNode
 from minsk_compiler.code_analysis.syntax.syntax_token import SyntaxToken
@@ -54,12 +55,16 @@ while True:
         continue
 
     syntax_tree = SyntaxTree.parse(line)
+    binder = Binder()
+    bound_expression = binder.bind_expression(syntax_tree.root)
+    diagnostics = syntax_tree.diagnostics + tuple(binder.diagnostics)
+
     if show_tree:
         pretty_print(syntax_tree.root)
     if len(syntax_tree.diagnostics) > 0:
         for diagnostic in syntax_tree.diagnostics:
             console.print(diagnostic, style="red")
     else:
-        e = Evaluator(syntax_tree.root)
+        e = Evaluator(bound_expression)
         result = e.evaluate()
         print(result)
