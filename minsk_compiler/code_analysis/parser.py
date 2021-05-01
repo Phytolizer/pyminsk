@@ -57,34 +57,27 @@ class Parser:
         end_of_file_token = self._match_token(SyntaxKind.END_OF_FILE_TOKEN)
         return self.diagnostics, expression, end_of_file_token
 
-    def _parse_expression(self) -> ExpressionSyntax:
-        return self._parse_term()
-
-    def _parse_term(self) -> ExpressionSyntax:
-        left = self._parse_factor()
-
-        while (
-                self._current().kind() == SyntaxKind.PLUS_TOKEN
-                or self._current().kind() == SyntaxKind.MINUS_TOKEN
-        ):
-            operator_token = self._next_token()
-            right = self._parse_factor()
-            left = BinaryExpressionSyntax(left, operator_token, right)
-
-        return left
-
-    def _parse_factor(self) -> ExpressionSyntax:
+    def _parse_expression(self, parent_precedence: int = 0) -> ExpressionSyntax:
         left = self._parse_primary_expression()
+        while True:
+            precedence = Parser.get_binary_operator_precedence(self._current().kind())
+            if precedence == 0 or precedence <= parent_precedence:
+                break
 
-        while (
-                self._current().kind() == SyntaxKind.STAR_TOKEN
-                or self._current().kind() == SyntaxKind.SLASH_TOKEN
-        ):
             operator_token = self._next_token()
-            right = self._parse_primary_expression()
+            right = self._parse_expression(precedence)
             left = BinaryExpressionSyntax(left, operator_token, right)
 
         return left
+
+    @staticmethod
+    def get_binary_operator_precedence(kind: SyntaxKind) -> int:
+        if kind in (SyntaxKind.STAR_TOKEN, SyntaxKind.SLASH_TOKEN):
+            return 2
+        elif kind in (SyntaxKind.PLUS_TOKEN, SyntaxKind.MINUS_TOKEN):
+            return 1
+        else:
+            return 0
 
     def _parse_primary_expression(self) -> ExpressionSyntax:
         if self._current().kind() == SyntaxKind.OPEN_PARENTHESIS_TOKEN:
