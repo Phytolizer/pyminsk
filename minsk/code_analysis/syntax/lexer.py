@@ -1,18 +1,19 @@
-from typing import List
-
+from minsk.code_analysis.diagnostic import Diagnostic
+from minsk.code_analysis.diagnostic_bag import DiagnosticBag
 from minsk.code_analysis.syntax import syntax_facts
 from minsk.code_analysis.syntax.syntax_kind import SyntaxKind
 from minsk.code_analysis.syntax.syntax_token import SyntaxToken
+from minsk.code_analysis.text_span import TextSpan
 
 
 class Lexer:
     _text: str
-    diagnostics: List[str]
+    diagnostics: DiagnosticBag
 
     def __init__(self, text: str):
         self._text = text
         self._position = 0
-        self.diagnostics = []
+        self.diagnostics = DiagnosticBag()
 
     def _peek(self, offset: int) -> str:
         index = self._position + offset
@@ -104,8 +105,8 @@ class Lexer:
             self._position += 1
             return tok
         else:
-            self.diagnostics.append(
-                f"ERROR: bad character in input: '{self._text[self._position]}'"
+            self.diagnostics.report_bad_character(
+                TextSpan(self._position, 1), self._current()
             )
             tok = SyntaxToken(
                 SyntaxKind.BAD_TOKEN, self._position, self._text[self._position]

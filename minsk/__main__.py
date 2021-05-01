@@ -1,9 +1,7 @@
 from rich.console import Console
 from rich.style import Style
 
-from minsk.code_analysis.binding.binder import Binder
 from minsk.code_analysis.compilation import Compilation
-from minsk.code_analysis.evaluator import Evaluator
 from minsk.code_analysis.syntax.syntax_node import SyntaxNode
 from minsk.code_analysis.syntax.syntax_token import SyntaxToken
 from minsk.code_analysis.syntax.syntax_tree import SyntaxTree
@@ -64,6 +62,6 @@ while True:
         pretty_print(syntax_tree.root)
     if len(diagnostics) > 0:
         for diagnostic in diagnostics:
-            console.print(diagnostic, style="red")
+            console.print(str(diagnostic), style="red", highlight=False)
     else:
         console.print(result.value, style="magenta")

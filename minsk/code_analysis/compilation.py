@@ -1,4 +1,5 @@
 from minsk.code_analysis.binding.binder import Binder
+from minsk.code_analysis.diagnostic_bag import DiagnosticBag
 from minsk.code_analysis.evaluation_result import EvaluationResult
 from minsk.code_analysis.evaluator import Evaluator
 from minsk.code_analysis.syntax.syntax_tree import SyntaxTree
@@ -13,9 +14,9 @@ class Compilation:
     def evaluate(self) -> EvaluationResult:
         binder = Binder()
         bound_expression = binder.bind_expression(self.syntax.root)
-        diagnostics = self.syntax.diagnostics + tuple(binder.diagnostics)
+        diagnostics = self.syntax.diagnostics + binder.diagnostics
         if len(diagnostics) > 0:
             return EvaluationResult(diagnostics, None)
         evaluator = Evaluator(bound_expression)
         value = evaluator.evaluate()
-        return EvaluationResult((), value)
+        return EvaluationResult(DiagnosticBag(), value)

@@ -1,8 +1,8 @@
-from typing import List, Tuple
-
+from minsk.code_analysis.diagnostic import Diagnostic
+from minsk.code_analysis.diagnostic_bag import DiagnosticBag
+from minsk.code_analysis.syntax.binary_expression_syntax import BinaryExpressionSyntax
 from minsk.code_analysis.syntax.expression_syntax import ExpressionSyntax
 from minsk.code_analysis.syntax.lexer import Lexer
-from minsk.code_analysis.syntax.binary_expression_syntax import BinaryExpressionSyntax
 from minsk.code_analysis.syntax.literal_expression_syntax import LiteralExpressionSyntax
 from minsk.code_analysis.syntax.parenthesized_expression_syntax import ParenthesizedExpressionSyntax
 from minsk.code_analysis.syntax.syntax_facts import get_unary_operator_precedence, get_binary_operator_precedence
@@ -13,12 +13,12 @@ from minsk.code_analysis.syntax.unary_expression_syntax import UnaryExpressionSy
 
 class Parser:
     _position: int
-    _tokens: Tuple[SyntaxToken, ...]
-    diagnostics: List[str]
+    _tokens: tuple[SyntaxToken, ...]
+    diagnostics: DiagnosticBag
 
     def __init__(self, text: str):
         lexer = Lexer(text)
-        tokens: List[SyntaxToken] = []
+        tokens: list[SyntaxToken] = []
         while True:
             token = lexer.lex()
             if token.kind() not in (
@@ -49,18 +49,17 @@ class Parser:
         if self._current().kind() == kind:
             return self._next_token()
 
-        self.diagnostics.append(
-            f"ERROR: Unexpected token <{self._current().kind()}>, expected <{kind}>"
-        )
+        self.diagnostics.report_unexpected_token(self._current().span, self._current().kind(), kind)
         return SyntaxToken(kind, self._current().position, "")
 
-    def parse(self) -> Tuple[List[str], ExpressionSyntax, SyntaxToken]:
+    def parse(self) -> tuple[DiagnosticBag, ExpressionSyntax, SyntaxToken]:
         expression = self._parse_expression()
         end_of_file_token = self._match_token(SyntaxKind.END_OF_FILE_TOKEN)
         return self.diagnostics, expression, end_of_file_token
 
     def _parse_expression(self, parent_precedence: int = 0) -> ExpressionSyntax:
         unary_operator_precedence = get_unary_operator_precedence(self._current().kind())
+        left: ExpressionSyntax
         if unary_operator_precedence != 0 and unary_operator_precedence >= parent_precedence:
             operator_token = self._next_token()
             operand = self._parse_expression(unary_operator_precedence)

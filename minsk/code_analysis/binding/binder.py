@@ -1,4 +1,4 @@
-from typing import cast, List
+from typing import cast
 
 from minsk.code_analysis.binding.bound_binary_expression import BoundBinaryExpression
 from minsk.code_analysis.binding.bound_binary_operator import BoundBinaryOperator
@@ -6,6 +6,7 @@ from minsk.code_analysis.binding.bound_expression import BoundExpression
 from minsk.code_analysis.binding.bound_literal_expression import BoundLiteralExpression
 from minsk.code_analysis.binding.bound_unary_expression import BoundUnaryExpression
 from minsk.code_analysis.binding.bound_unary_operator import BoundUnaryOperator
+from minsk.code_analysis.diagnostic_bag import DiagnosticBag
 from minsk.code_analysis.syntax.binary_expression_syntax import BinaryExpressionSyntax
 from minsk.code_analysis.syntax.expression_syntax import ExpressionSyntax
 from minsk.code_analysis.syntax.literal_expression_syntax import LiteralExpressionSyntax
@@ -15,10 +16,10 @@ from minsk.code_analysis.syntax.unary_expression_syntax import UnaryExpressionSy
 
 
 class Binder:
-    diagnostics: List[str]
+    diagnostics: DiagnosticBag
 
     def __init__(self):
-        self.diagnostics = []
+        self.diagnostics = DiagnosticBag()
 
     def bind_expression(self, syntax: ExpressionSyntax) -> BoundExpression:
         if syntax.kind() == SyntaxKind.LITERAL_EXPRESSION:
@@ -42,8 +43,8 @@ class Binder:
         bound_operand = self.bind_expression(syntax.operand)
         bound_operator = BoundUnaryOperator.bind(syntax.operator_token.kind(), bound_operand.type())
         if bound_operator is None:
-            self.diagnostics.append(
-                f"Unary operator '{syntax.operator_token.text}' is not defined for type {bound_operand.type()}")
+            self.diagnostics.report_undefined_unary_operator(syntax.operator_token.span, syntax.operator_token.text,
+                                                             bound_operand.type())
             return bound_operand
         return BoundUnaryExpression(bound_operator, bound_operand)
 
@@ -53,9 +54,8 @@ class Binder:
         bound_operator = BoundBinaryOperator.bind(syntax.operator_token.kind(), bound_left.type(),
                                                   bound_right.type())
         if bound_operator is None:
-            self.diagnostics.append(
-                f"Binary operator '{syntax.operator_token.text}' is not defined for types {bound_left.type()} "
-                f"and {bound_right.type()}")
+            self.diagnostics.report_undefined_binary_operator(syntax.operator_token.span, syntax.operator_token.text,
+                                                              bound_left.type(), bound_right.type())
             return bound_left
         return BoundBinaryExpression(bound_left, bound_operator, bound_right)
 

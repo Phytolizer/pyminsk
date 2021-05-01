@@ -1,22 +1,21 @@
-from typing import List, Tuple
-
+from minsk.code_analysis.diagnostic_bag import DiagnosticBag
 from minsk.code_analysis.syntax.expression_syntax import ExpressionSyntax
 from minsk.code_analysis.syntax.parser import Parser
 from minsk.code_analysis.syntax.syntax_token import SyntaxToken
 
 
 class SyntaxTree:
-    diagnostics: Tuple[str, ...]
+    diagnostics: DiagnosticBag
     root: ExpressionSyntax
     end_of_file_token: SyntaxToken
 
     def __init__(
             self,
-            diagnostics: List[str],
+            diagnostics: DiagnosticBag,
             root: ExpressionSyntax,
             end_of_file_token: SyntaxToken,
     ):
-        self.diagnostics = tuple(diagnostics)
+        self.diagnostics = diagnostics
         self.root = root
         self.end_of_file_token = end_of_file_token
 
