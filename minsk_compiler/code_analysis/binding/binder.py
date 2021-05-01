@@ -1,10 +1,12 @@
 from typing import cast, List, Optional
 
 from minsk_compiler.code_analysis.binding.bound_binary_expression import BoundBinaryExpression
+from minsk_compiler.code_analysis.binding.bound_binary_operator import BoundBinaryOperator
 from minsk_compiler.code_analysis.binding.bound_binary_operator_kind import BoundBinaryOperatorKind
 from minsk_compiler.code_analysis.binding.bound_expression import BoundExpression
 from minsk_compiler.code_analysis.binding.bound_literal_expression import BoundLiteralExpression
 from minsk_compiler.code_analysis.binding.bound_unary_expression import BoundUnaryExpression
+from minsk_compiler.code_analysis.binding.bound_unary_operator import BoundUnaryOperator
 from minsk_compiler.code_analysis.binding.bound_unary_operator_kind import BoundUnaryOperatorKind
 from minsk_compiler.code_analysis.syntax.binary_expression_syntax import BinaryExpressionSyntax
 from minsk_compiler.code_analysis.syntax.expression_syntax import ExpressionSyntax
@@ -40,7 +42,7 @@ class Binder:
 
     def _bind_unary_expression(self, syntax: UnaryExpressionSyntax) -> BoundExpression:
         bound_operand = self.bind_expression(syntax.operand)
-        bound_operator_kind = self._bind_unary_operator_kind(syntax.operator_token.kind(), bound_operand.type())
+        bound_operator_kind = BoundUnaryOperator.bind(syntax.operator_token.kind(), bound_operand.type())
         if bound_operator_kind is None:
             self.diagnostics.append(
                 f"Unary operator '{syntax.operator_token.text}' is not defined for type {bound_operand.type()}")
@@ -50,42 +52,14 @@ class Binder:
     def _bind_binary_expression(self, syntax: BinaryExpressionSyntax) -> BoundExpression:
         bound_left = self.bind_expression(syntax.left)
         bound_right = self.bind_expression(syntax.right)
-        bound_operator_kind = self._bind_binary_operator_kind(syntax.operator_token.kind(), bound_left.type(),
-                                                              bound_right.type())
+        bound_operator_kind = BoundBinaryOperator.bind(syntax.operator_token.kind(), bound_left.type(),
+                                                       bound_right.type())
         if bound_operator_kind is None:
             self.diagnostics.append(
                 f"Binary operator '{syntax.operator_token.text}' is not defined for types {bound_left.type()} "
                 f"and {bound_right.type()}")
             return bound_left
         return BoundBinaryExpression(bound_left, bound_operator_kind, bound_right)
-
-    def _bind_unary_operator_kind(self, kind: SyntaxKind, operand_type) -> Optional[BoundUnaryOperatorKind]:
-        if operand_type is int:
-            if kind == SyntaxKind.PLUS_TOKEN:
-                return BoundUnaryOperatorKind.IDENTITY
-            elif kind == SyntaxKind.MINUS_TOKEN:
-                return BoundUnaryOperatorKind.NEGATION
-        elif operand_type is bool:
-            if kind == SyntaxKind.BANG_TOKEN:
-                return BoundUnaryOperatorKind.LOGICAL_NEGATION
-        return None
-
-    def _bind_binary_operator_kind(self, kind: SyntaxKind, left_type, right_type) -> Optional[BoundBinaryOperatorKind]:
-        if left_type is int and right_type is int:
-            if kind == SyntaxKind.PLUS_TOKEN:
-                return BoundBinaryOperatorKind.ADDITION
-            elif kind == SyntaxKind.MINUS_TOKEN:
-                return BoundBinaryOperatorKind.SUBTRACTION
-            elif kind == SyntaxKind.STAR_TOKEN:
-                return BoundBinaryOperatorKind.MULTIPLICATION
-            elif kind == SyntaxKind.SLASH_TOKEN:
-                return BoundBinaryOperatorKind.DIVISION
-        elif left_type is bool and right_type is bool:
-            if kind == SyntaxKind.AMPERSAND_AMPERSAND_TOKEN:
-                return BoundBinaryOperatorKind.LOGICAL_AND
-            elif kind == SyntaxKind.PIPE_PIPE_TOKEN:
-                return BoundBinaryOperatorKind.LOGICAL_OR
-        return None
 
     def _bind_parenthesized_expression(self, syntax: ParenthesizedExpressionSyntax) -> BoundExpression:
         return self.bind_expression(syntax.expression)

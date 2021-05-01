@@ -7,4 +7,3 @@ class BoundExpression(BoundNode, ABC):
     @abstractmethod
     def type(self):
         pass
-

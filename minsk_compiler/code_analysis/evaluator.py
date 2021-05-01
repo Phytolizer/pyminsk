@@ -26,34 +26,34 @@ class Evaluator:
             root = cast(BoundUnaryExpression, root)
             operand = self._evaluate_expression(root.operand)
 
-            if root.operator_kind == BoundUnaryOperatorKind.IDENTITY:
+            if root.operator.kind == BoundUnaryOperatorKind.IDENTITY:
                 return operand
-            elif root.operator_kind == BoundUnaryOperatorKind.NEGATION:
+            elif root.operator.kind == BoundUnaryOperatorKind.NEGATION:
                 return -operand
-            elif root.operator_kind == BoundUnaryOperatorKind.LOGICAL_NEGATION:
+            elif root.operator.kind == BoundUnaryOperatorKind.LOGICAL_NEGATION:
                 return not operand
             else:
-                raise Exception(f"unexpected unary operator {root.operator_kind}")
+                raise Exception(f"unexpected unary operator {root.operator.kind}")
 
         elif root.kind() == BoundNodeKind.BINARY_EXPRESSION:
             root = cast(BoundBinaryExpression, root)
             left = self._evaluate_expression(root.left)
             right = self._evaluate_expression(root.right)
 
-            if root.operator_kind == BoundBinaryOperatorKind.ADDITION:
+            if root.operator.kind == BoundBinaryOperatorKind.ADDITION:
                 return left + right
-            elif root.operator_kind == BoundBinaryOperatorKind.SUBTRACTION:
+            elif root.operator.kind == BoundBinaryOperatorKind.SUBTRACTION:
                 return left - right
-            elif root.operator_kind == BoundBinaryOperatorKind.MULTIPLICATION:
+            elif root.operator.kind == BoundBinaryOperatorKind.MULTIPLICATION:
                 return left * right
-            elif root.operator_kind == BoundBinaryOperatorKind.DIVISION:
+            elif root.operator.kind == BoundBinaryOperatorKind.DIVISION:
                 return left // right
-            elif root.operator_kind == BoundBinaryOperatorKind.LOGICAL_AND:
+            elif root.operator.kind == BoundBinaryOperatorKind.LOGICAL_AND:
                 return left and right
-            elif root.operator_kind == BoundBinaryOperatorKind.LOGICAL_OR:
+            elif root.operator.kind == BoundBinaryOperatorKind.LOGICAL_OR:
                 return left or right
             else:
-                raise Exception(f"unexpected binary operator {root.operator_kind}")
+                raise Exception(f"unexpected binary operator {root.operator}")
 
         else:
             raise Exception(f"unexpected node {root.kind()}")

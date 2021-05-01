@@ -5,6 +5,8 @@ from minsk_compiler.code_analysis.binding.bound_node_kind import BoundNodeKind
 
 
 class BoundLiteralExpression(BoundExpression):
+    value: Any
+
     def __init__(self, value: Any):
         self.value = value
 

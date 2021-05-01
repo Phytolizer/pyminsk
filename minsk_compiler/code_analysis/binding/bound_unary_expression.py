@@ -1,15 +1,18 @@
 from minsk_compiler.code_analysis.binding.bound_expression import BoundExpression
 from minsk_compiler.code_analysis.binding.bound_node_kind import BoundNodeKind
-from minsk_compiler.code_analysis.binding.bound_unary_operator_kind import BoundUnaryOperatorKind
+from minsk_compiler.code_analysis.binding.bound_unary_operator import BoundUnaryOperator
 
 
 class BoundUnaryExpression(BoundExpression):
-    def __init__(self, operator_kind: BoundUnaryOperatorKind, operand: BoundExpression):
-        self.operator_kind = operator_kind
+    operator: BoundUnaryOperator
+    operand: BoundExpression
+
+    def __init__(self, operator: BoundUnaryOperator, operand: BoundExpression):
+        self.operator = operator
         self.operand = operand
 
     def type(self):
-        return self.operand.type()
+        return self.operator.result_type
 
     def kind(self) -> BoundNodeKind:
         return BoundNodeKind.UNARY_EXPRESSION
