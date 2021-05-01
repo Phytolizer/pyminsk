@@ -7,11 +7,12 @@ from minsk.code_analysis.compilation import Compilation
 from minsk.code_analysis.syntax.syntax_node import SyntaxNode
 from minsk.code_analysis.syntax.syntax_token import SyntaxToken
 from minsk.code_analysis.syntax.syntax_tree import SyntaxTree
+from minsk.code_analysis.variable_symbol import VariableSymbol
 
 show_tree = False
 console = Console()
 pretty_indent_style = Style(color="grey35")
-variables: dict[str, Any] = dict()
+variables: dict[VariableSymbol, Any] = dict()
 
 
 def pretty_print(node: SyntaxNode, indent: str = "", is_last: bool = True):

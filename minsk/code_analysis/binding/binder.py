@@ -17,13 +17,14 @@ from minsk.code_analysis.syntax.name_expression_syntax import NameExpressionSynt
 from minsk.code_analysis.syntax.parenthesized_expression_syntax import ParenthesizedExpressionSyntax
 from minsk.code_analysis.syntax.syntax_kind import SyntaxKind
 from minsk.code_analysis.syntax.unary_expression_syntax import UnaryExpressionSyntax
+from minsk.code_analysis.variable_symbol import VariableSymbol
 
 
 class Binder:
-    _variables: dict[str, Any]
+    _variables: dict[VariableSymbol, Any]
     diagnostics: DiagnosticBag
 
-    def __init__(self, variables: dict[str, Any]):
+    def __init__(self, variables: dict[VariableSymbol, Any]):
         self._variables = variables
         self.diagnostics = DiagnosticBag()
 
@@ -74,27 +75,21 @@ class Binder:
 
     def _bind_name_expression(self, syntax: NameExpressionSyntax) -> BoundExpression:
         name = syntax.identifier_token.text
-        try:
-            value = self._variables[name]
-        except KeyError:
+        variable = next(filter(lambda v: v.name == name, self._variables.keys()), None)
+        if variable is None:
             self.diagnostics.report_undefined_name(syntax.identifier_token.span, name)
             return BoundLiteralExpression(0)
 
-        ty = type(value)
-        return BoundVariableExpression(name, ty)
+        return BoundVariableExpression(variable)
 
     def _bind_assignment_expression(self, syntax: AssignmentExpressionSyntax) -> BoundExpression:
-        variable = syntax.identifier_token.text
+        name = syntax.identifier_token.text
         bound_expression = self.bind_expression(syntax.expression)
 
-        default_value: Any
-        if bound_expression.type() == int:
-            default_value = 0
-        elif bound_expression.type() == bool:
-            default_value = False
-        else:
-            raise Exception(f"unsupported variable type: {bound_expression.type().__name__}")
-
-        self._variables[variable] = default_value
+        existing_variable = next(filter(lambda v: v.name == name, self._variables.keys()), None)
+        if existing_variable is not None:
+            del self._variables[existing_variable]
+        variable = VariableSymbol(name, bound_expression.type())
+        self._variables[variable] = None
 
         return BoundAssignmentExpression(variable, bound_expression)

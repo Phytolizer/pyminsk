@@ -9,13 +9,14 @@ from minsk.code_analysis.binding.bound_node_kind import BoundNodeKind
 from minsk.code_analysis.binding.bound_unary_expression import BoundUnaryExpression
 from minsk.code_analysis.binding.bound_unary_operator_kind import BoundUnaryOperatorKind
 from minsk.code_analysis.binding.bound_variable_expression import BoundVariableExpression
+from minsk.code_analysis.variable_symbol import VariableSymbol
 
 
 class Evaluator:
-    _variables: dict[str, Any]
+    _variables: dict[VariableSymbol, Any]
     _root: BoundExpression
 
-    def __init__(self, root: BoundExpression, variables):
+    def __init__(self, root: BoundExpression, variables: dict[VariableSymbol, Any]):
         self._variables = variables
         self._root = root
 
@@ -28,11 +29,11 @@ class Evaluator:
             return root.value
         elif root.kind() == BoundNodeKind.VARIABLE_EXPRESSION:
             root = cast(BoundVariableExpression, root)
-            return self._variables[root.name]
+            return self._variables[root.variable]
         elif root.kind() == BoundNodeKind.ASSIGNMENT_EXPRESSION:
             root = cast(BoundAssignmentExpression, root)
             value = self._evaluate_expression(root.expression)
-            self._variables[root.name] = value
+            self._variables[root.variable] = value
             return value
         elif root.kind() == BoundNodeKind.UNARY_EXPRESSION:
             root = cast(BoundUnaryExpression, root)
