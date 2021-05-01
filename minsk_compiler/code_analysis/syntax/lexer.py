@@ -56,6 +56,22 @@ class Lexer:
             text = self._text[start:self._position]
             kind = syntax_facts.get_keyword_kind(text)
             return SyntaxToken(kind, start, text)
+        elif self._current() == "&" and self._lookahead() == "&":
+            tok = SyntaxToken(SyntaxKind.AMPERSAND_AMPERSAND_TOKEN, self._position, "&&")
+            self._position += 2
+            return tok
+        elif self._current() == "|" and self._lookahead() == "|":
+            tok = SyntaxToken(SyntaxKind.PIPE_PIPE_TOKEN, self._position, "||")
+            self._position += 2
+            return tok
+        elif self._current() == "=" and self._lookahead() == "=":
+            tok = SyntaxToken(SyntaxKind.EQUALS_EQUALS_TOKEN, self._position, "==")
+            self._position += 2
+            return tok
+        elif self._current() == "!" and self._lookahead() == "=":
+            tok = SyntaxToken(SyntaxKind.BANG_EQUALS_TOKEN, self._position, "!=")
+            self._position += 2
+            return tok
         elif self._current() == "+":
             tok = SyntaxToken(SyntaxKind.PLUS_TOKEN, self._position, "+")
             self._position += 1
@@ -86,14 +102,6 @@ class Lexer:
             tok = SyntaxToken(SyntaxKind.BANG_TOKEN,
                               self._position, "!")
             self._position += 1
-            return tok
-        elif self._current() == "&" and self._lookahead() == "&":
-            tok = SyntaxToken(SyntaxKind.AMPERSAND_AMPERSAND_TOKEN, self._position, "&&")
-            self._position += 2
-            return tok
-        elif self._current() == "|" and self._lookahead() == "|":
-            tok = SyntaxToken(SyntaxKind.PIPE_PIPE_TOKEN, self._position, "||")
-            self._position += 2
             return tok
         else:
             self.diagnostics.append(

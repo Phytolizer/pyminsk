@@ -52,6 +52,10 @@ class Evaluator:
                 return left and right
             elif root.operator.kind == BoundBinaryOperatorKind.LOGICAL_OR:
                 return left or right
+            elif root.operator.kind == BoundBinaryOperatorKind.EQUALITY:
+                return left == right
+            elif root.operator.kind == BoundBinaryOperatorKind.INEQUALITY:
+                return left != right
             else:
                 raise Exception(f"unexpected binary operator {root.operator}")
 

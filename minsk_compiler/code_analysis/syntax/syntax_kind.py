@@ -21,6 +21,8 @@ class SyntaxKind(Enum):
     BANG_TOKEN = auto()
     AMPERSAND_AMPERSAND_TOKEN = auto()
     PIPE_PIPE_TOKEN = auto()
+    EQUALS_EQUALS_TOKEN = auto()
+    BANG_EQUALS_TOKEN = auto()
 
     # Keywords
     TRUE_KEYWORD = auto()

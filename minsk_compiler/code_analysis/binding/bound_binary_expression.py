@@ -14,7 +14,7 @@ class BoundBinaryExpression(BoundExpression):
         self.right = right
 
     def type(self):
-        return self.operator.result_type
+        return self.operator.type
 
     def kind(self) -> BoundNodeKind:
         return BoundNodeKind.BINARY_EXPRESSION

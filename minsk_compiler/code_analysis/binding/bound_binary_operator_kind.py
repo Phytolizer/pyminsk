@@ -8,3 +8,6 @@ class BoundBinaryOperatorKind(Enum):
     DIVISION = auto()
     LOGICAL_AND = auto()
     LOGICAL_OR = auto()
+
+    EQUALITY = auto()
+    INEQUALITY = auto()

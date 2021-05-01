@@ -8,7 +8,7 @@ class BoundUnaryOperator:
     syntax_kind: SyntaxKind
     kind: BoundUnaryOperatorKind
     operand_type: Type
-    result_type: Type
+    type: Type
 
     def __init__(self, syntax_kind: SyntaxKind, kind: BoundUnaryOperatorKind, operand_type: Type,
                  result_type: Optional[Type] = None):
@@ -17,7 +17,7 @@ class BoundUnaryOperator:
         self.operand_type = operand_type
         if result_type is None:
             result_type = operand_type
-        self.result_type = result_type
+        self.type = result_type
 
     @staticmethod
     def _operators() -> Tuple["BoundUnaryOperator", ...]:

@@ -9,7 +9,7 @@ class BoundBinaryOperator:
     kind: BoundBinaryOperatorKind
     left_type: Type
     right_type: Type
-    result_type: Type
+    type: Type
 
     def __init__(self, syntax_kind: SyntaxKind, kind: BoundBinaryOperatorKind, left_type: Type,
                  right_type: Optional[Type] = None, result_type: Optional[Type] = None):
@@ -21,7 +21,7 @@ class BoundBinaryOperator:
         self.right_type = right_type
         if result_type is None:
             result_type = left_type
-        self.result_type = result_type
+        self.type = result_type
 
     @staticmethod
     def _operators() -> Tuple["BoundBinaryOperator", ...]:
@@ -30,8 +30,14 @@ class BoundBinaryOperator:
             BoundBinaryOperator(SyntaxKind.MINUS_TOKEN, BoundBinaryOperatorKind.SUBTRACTION, int),
             BoundBinaryOperator(SyntaxKind.STAR_TOKEN, BoundBinaryOperatorKind.MULTIPLICATION, int),
             BoundBinaryOperator(SyntaxKind.SLASH_TOKEN, BoundBinaryOperatorKind.DIVISION, int),
+
+            BoundBinaryOperator(SyntaxKind.EQUALS_EQUALS_TOKEN, BoundBinaryOperatorKind.EQUALITY, int, int, bool),
+            BoundBinaryOperator(SyntaxKind.BANG_EQUALS_TOKEN, BoundBinaryOperatorKind.INEQUALITY, int, int, bool),
+
             BoundBinaryOperator(SyntaxKind.AMPERSAND_AMPERSAND_TOKEN, BoundBinaryOperatorKind.LOGICAL_AND, bool),
             BoundBinaryOperator(SyntaxKind.PIPE_PIPE_TOKEN, BoundBinaryOperatorKind.LOGICAL_OR, bool),
+            BoundBinaryOperator(SyntaxKind.EQUALS_EQUALS_TOKEN, BoundBinaryOperatorKind.EQUALITY, bool, bool, bool),
+            BoundBinaryOperator(SyntaxKind.BANG_EQUALS_TOKEN, BoundBinaryOperatorKind.INEQUALITY, bool, bool, bool),
         )
 
     @staticmethod

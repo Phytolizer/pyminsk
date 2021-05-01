@@ -12,7 +12,7 @@ class BoundUnaryExpression(BoundExpression):
         self.operand = operand
 
     def type(self):
-        return self.operator.result_type
+        return self.operator.type
 
     def kind(self) -> BoundNodeKind:
         return BoundNodeKind.UNARY_EXPRESSION
