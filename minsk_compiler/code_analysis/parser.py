@@ -18,7 +18,7 @@ class Parser:
         lexer = Lexer(text)
         tokens: List[SyntaxToken] = []
         while True:
-            token = lexer.next_token()
+            token = lexer.lex()
             if token.kind() not in (
                     SyntaxKind.BAD_TOKEN, SyntaxKind.WHITESPACE_TOKEN):
                 tokens.append(token)
@@ -55,7 +55,7 @@ class Parser:
     def parse(self) -> Tuple[List[str], ExpressionSyntax, SyntaxToken]:
         expression = self._parse_expression()
         end_of_file_token = self._match_token(SyntaxKind.END_OF_FILE_TOKEN)
-        return (self.diagnostics, expression, end_of_file_token)
+        return self.diagnostics, expression, end_of_file_token
 
     def _parse_expression(self) -> ExpressionSyntax:
         return self._parse_term()

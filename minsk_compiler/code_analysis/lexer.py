@@ -22,7 +22,7 @@ class Lexer:
     def _next(self):
         self._position += 1
 
-    def next_token(self):
+    def lex(self):
         if self._position >= len(self._text):
             return SyntaxToken(SyntaxKind.END_OF_FILE_TOKEN, self._position, "")
         if self._current().isdigit():
