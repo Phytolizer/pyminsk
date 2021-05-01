@@ -1,3 +1,4 @@
+from minsk_compiler.parenthesized_expression_syntax import ParenthesizedExpressionSyntax
 from minsk_compiler.syntax_tree import SyntaxTree
 from minsk_compiler.expression_syntax import ExpressionSyntax
 from minsk_compiler.binary_expression_syntax import BinaryExpressionSyntax
@@ -86,5 +87,10 @@ class Parser:
         return left
 
     def _parse_primary_expression(self) -> ExpressionSyntax:
+        if self._current().kind() == SyntaxKind.OPEN_PARENTHESIS_TOKEN:
+            left = self._next_token()
+            expression = self._parse_expression()
+            right = self._match_token(SyntaxKind.CLOSE_PARENTHESIS_TOKEN)
+            return ParenthesizedExpressionSyntax(left, expression, right)
         literal_token = self._match_token(SyntaxKind.NUMBER_TOKEN)
         return LiteralExpressionSyntax(literal_token)

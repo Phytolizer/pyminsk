@@ -30,5 +30,7 @@ class Evaluator:
                 raise Exception(
                     f"unexpected binary operator {root.operator_token.kind()}"
                 )
+        elif root.kind() == SyntaxKind.PARENTHESIZED_EXPRESSION:
+            return self._evaluate_expression(root.expression)
         else:
             raise Exception(f"unexpected node {root.kind()}")
