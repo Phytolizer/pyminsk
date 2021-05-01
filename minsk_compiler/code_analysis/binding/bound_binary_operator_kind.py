@@ -6,3 +6,5 @@ class BoundBinaryOperatorKind(Enum):
     SUBTRACTION = auto()
     MULTIPLICATION = auto()
     DIVISION = auto()
+    LOGICAL_AND = auto()
+    LOGICAL_OR = auto()

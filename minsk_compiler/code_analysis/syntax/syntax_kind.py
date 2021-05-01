@@ -18,6 +18,9 @@ class SyntaxKind(Enum):
     SLASH_TOKEN = auto()
     OPEN_PARENTHESIS_TOKEN = auto()
     CLOSE_PARENTHESIS_TOKEN = auto()
+    BANG_TOKEN = auto()
+    AMPERSAND_AMPERSAND_TOKEN = auto()
+    PIPE_PIPE_TOKEN = auto()
 
     # Keywords
     TRUE_KEYWORD = auto()

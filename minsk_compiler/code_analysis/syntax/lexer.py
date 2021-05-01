@@ -14,11 +14,18 @@ class Lexer:
         self._position = 0
         self.diagnostics = []
 
-    def _current(self) -> str:
-        if self._position >= len(self._text):
+    def _peek(self, offset: int) -> str:
+        index = self._position + offset
+        if index >= len(self._text):
             return "\0"
         else:
-            return self._text[self._position]
+            return self._text[index]
+
+    def _current(self) -> str:
+        return self._peek(0)
+
+    def _lookahead(self) -> str:
+        return self._peek(1)
 
     def _next(self):
         self._position += 1
@@ -74,6 +81,19 @@ class Lexer:
             tok = SyntaxToken(SyntaxKind.CLOSE_PARENTHESIS_TOKEN,
                               self._position, ")")
             self._position += 1
+            return tok
+        elif self._current() == "!":
+            tok = SyntaxToken(SyntaxKind.BANG_TOKEN,
+                              self._position, "!")
+            self._position += 1
+            return tok
+        elif self._current() == "&" and self._lookahead() == "&":
+            tok = SyntaxToken(SyntaxKind.AMPERSAND_AMPERSAND_TOKEN, self._position, "&&")
+            self._position += 2
+            return tok
+        elif self._current() == "|" and self._lookahead() == "|":
+            tok = SyntaxToken(SyntaxKind.PIPE_PIPE_TOKEN, self._position, "||")
+            self._position += 2
             return tok
         else:
             self.diagnostics.append(

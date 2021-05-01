@@ -60,28 +60,32 @@ class Binder:
         return BoundBinaryExpression(bound_left, bound_operator_kind, bound_right)
 
     def _bind_unary_operator_kind(self, kind: SyntaxKind, operand_type) -> Optional[BoundUnaryOperatorKind]:
-        if operand_type is not int:
-            return None
-        if kind == SyntaxKind.PLUS_TOKEN:
-            return BoundUnaryOperatorKind.IDENTITY
-        elif kind == SyntaxKind.MINUS_TOKEN:
-            return BoundUnaryOperatorKind.NEGATION
-        else:
-            raise Exception(f"unexpected unary operator {kind}")
+        if operand_type is int:
+            if kind == SyntaxKind.PLUS_TOKEN:
+                return BoundUnaryOperatorKind.IDENTITY
+            elif kind == SyntaxKind.MINUS_TOKEN:
+                return BoundUnaryOperatorKind.NEGATION
+        elif operand_type is bool:
+            if kind == SyntaxKind.BANG_TOKEN:
+                return BoundUnaryOperatorKind.LOGICAL_NEGATION
+        return None
 
     def _bind_binary_operator_kind(self, kind: SyntaxKind, left_type, right_type) -> Optional[BoundBinaryOperatorKind]:
-        if left_type is not int or right_type is not int:
-            return None
-        if kind == SyntaxKind.PLUS_TOKEN:
-            return BoundBinaryOperatorKind.ADDITION
-        elif kind == SyntaxKind.MINUS_TOKEN:
-            return BoundBinaryOperatorKind.SUBTRACTION
-        elif kind == SyntaxKind.STAR_TOKEN:
-            return BoundBinaryOperatorKind.MULTIPLICATION
-        elif kind == SyntaxKind.SLASH_TOKEN:
-            return BoundBinaryOperatorKind.DIVISION
-        else:
-            raise Exception(f"unexpected binary operator {kind}")
+        if left_type is int and right_type is int:
+            if kind == SyntaxKind.PLUS_TOKEN:
+                return BoundBinaryOperatorKind.ADDITION
+            elif kind == SyntaxKind.MINUS_TOKEN:
+                return BoundBinaryOperatorKind.SUBTRACTION
+            elif kind == SyntaxKind.STAR_TOKEN:
+                return BoundBinaryOperatorKind.MULTIPLICATION
+            elif kind == SyntaxKind.SLASH_TOKEN:
+                return BoundBinaryOperatorKind.DIVISION
+        elif left_type is bool and right_type is bool:
+            if kind == SyntaxKind.AMPERSAND_AMPERSAND_TOKEN:
+                return BoundBinaryOperatorKind.LOGICAL_AND
+            elif kind == SyntaxKind.PIPE_PIPE_TOKEN:
+                return BoundBinaryOperatorKind.LOGICAL_OR
+        return None
 
     def _bind_parenthesized_expression(self, syntax: ParenthesizedExpressionSyntax) -> BoundExpression:
         return self.bind_expression(syntax.expression)

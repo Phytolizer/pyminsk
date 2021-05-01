@@ -25,12 +25,13 @@ class Evaluator:
         elif root.kind() == BoundNodeKind.UNARY_EXPRESSION:
             root = cast(BoundUnaryExpression, root)
             operand = self._evaluate_expression(root.operand)
-            assert isinstance(operand, int)
 
             if root.operator_kind == BoundUnaryOperatorKind.IDENTITY:
                 return operand
             elif root.operator_kind == BoundUnaryOperatorKind.NEGATION:
                 return -operand
+            elif root.operator_kind == BoundUnaryOperatorKind.LOGICAL_NEGATION:
+                return not operand
             else:
                 raise Exception(f"unexpected unary operator {root.operator_kind}")
 
@@ -38,8 +39,6 @@ class Evaluator:
             root = cast(BoundBinaryExpression, root)
             left = self._evaluate_expression(root.left)
             right = self._evaluate_expression(root.right)
-            assert isinstance(left, int)
-            assert isinstance(right, int)
 
             if root.operator_kind == BoundBinaryOperatorKind.ADDITION:
                 return left + right
@@ -49,6 +48,10 @@ class Evaluator:
                 return left * right
             elif root.operator_kind == BoundBinaryOperatorKind.DIVISION:
                 return left // right
+            elif root.operator_kind == BoundBinaryOperatorKind.LOGICAL_AND:
+                return left and right
+            elif root.operator_kind == BoundBinaryOperatorKind.LOGICAL_OR:
+                return left or right
             else:
                 raise Exception(f"unexpected binary operator {root.operator_kind}")
 
