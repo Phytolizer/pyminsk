@@ -36,8 +36,8 @@ class BoundBinaryOperator:
 
             BoundBinaryOperator(SyntaxKind.AMPERSAND_AMPERSAND_TOKEN, BoundBinaryOperatorKind.LOGICAL_AND, bool),
             BoundBinaryOperator(SyntaxKind.PIPE_PIPE_TOKEN, BoundBinaryOperatorKind.LOGICAL_OR, bool),
-            BoundBinaryOperator(SyntaxKind.EQUALS_EQUALS_TOKEN, BoundBinaryOperatorKind.EQUALITY, bool, bool, bool),
-            BoundBinaryOperator(SyntaxKind.BANG_EQUALS_TOKEN, BoundBinaryOperatorKind.INEQUALITY, bool, bool, bool),
+            BoundBinaryOperator(SyntaxKind.EQUALS_EQUALS_TOKEN, BoundBinaryOperatorKind.EQUALITY, bool),
+            BoundBinaryOperator(SyntaxKind.BANG_EQUALS_TOKEN, BoundBinaryOperatorKind.INEQUALITY, bool),
         )
 
     @staticmethod

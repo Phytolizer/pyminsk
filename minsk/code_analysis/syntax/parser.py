@@ -1,4 +1,3 @@
-from minsk.code_analysis.diagnostic import Diagnostic
 from minsk.code_analysis.diagnostic_bag import DiagnosticBag
 from minsk.code_analysis.syntax.binary_expression_syntax import BinaryExpressionSyntax
 from minsk.code_analysis.syntax.expression_syntax import ExpressionSyntax

@@ -12,14 +12,17 @@ pretty_indent_style = Style(color="grey35")
 
 
 def pretty_print(node: SyntaxNode, indent: str = "", is_last: bool = True):
-    console.print(indent, end="", style=pretty_indent_style)
+    console.print(indent, end="", style=pretty_indent_style, highlight=False)
     if is_last:
-        console.print("\\..", end="", style=pretty_indent_style)
+        console.print("\\..", end="", style=pretty_indent_style, highlight=False)
     else:
-        console.print("+..", end="", style=pretty_indent_style)
-    console.print(node.kind(), end="")
-    if isinstance(node, SyntaxToken) and node.value is not None:
-        console.print(f" {node.value}", end="", style="bright_magenta")
+        console.print("+..", end="", style=pretty_indent_style, highlight=False)
+    console.print(node.kind(), end="", highlight=False)
+    if isinstance(node, SyntaxToken):
+        if node.value is None:
+            console.print(f" '{node.text}'", end="", style="bright_green", highlight=False)
+        else:
+            console.print(f" {node.value}", end="", style="bright_magenta", highlight=False)
 
     console.print()
 
@@ -66,10 +69,12 @@ while True:
             error = line[diagnostic.span.start:diagnostic.span.end()]
             suffix = line[diagnostic.span.end():]
 
+            console.print()
             console.print(f"    {prefix}", end="", highlight=False)
             console.print(error, style="red", end="", highlight=False)
             console.print(suffix, highlight=False)
 
             console.print(str(diagnostic), style="red", highlight=False)
+            console.print()
     else:
-        console.print(result.value, style="magenta")
+        console.print(result.value, style="magenta", highlight=False)
