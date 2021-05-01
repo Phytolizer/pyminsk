@@ -1,5 +1,5 @@
-from minsk_compiler.syntax_kind import SyntaxKind
-from minsk_compiler.expression_syntax import ExpressionSyntax
+from minsk_compiler.code_analysis.syntax.expression_syntax import ExpressionSyntax
+from minsk_compiler.code_analysis.syntax.syntax_kind import SyntaxKind
 
 
 class Evaluator:

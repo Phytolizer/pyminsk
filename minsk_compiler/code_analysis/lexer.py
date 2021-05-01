@@ -1,6 +1,7 @@
 from typing import List
-from minsk_compiler.syntax_kind import SyntaxKind
-from minsk_compiler.syntax_token import SyntaxToken
+
+from minsk_compiler.code_analysis.syntax.syntax_kind import SyntaxKind
+from minsk_compiler.code_analysis.syntax.syntax_token import SyntaxToken
 
 
 class Lexer:
@@ -29,7 +30,7 @@ class Lexer:
             while self._current().isdigit():
                 self._next()
 
-            text = self._text[start : self._position]
+            text = self._text[start: self._position]
             value = int(text)
             return SyntaxToken(SyntaxKind.NUMBER_TOKEN, start, text, value)
         elif self._current().isspace():
@@ -37,7 +38,7 @@ class Lexer:
             while self._current().isspace():
                 self._next()
 
-            text = self._text[start : self._position]
+            text = self._text[start: self._position]
             return SyntaxToken(SyntaxKind.WHITESPACE_TOKEN, start, text)
         elif self._current() == "+":
             tok = SyntaxToken(SyntaxKind.PLUS_TOKEN, self._position, "+")
@@ -56,11 +57,13 @@ class Lexer:
             self._position += 1
             return tok
         elif self._current() == "(":
-            tok = SyntaxToken(SyntaxKind.OPEN_PARENTHESIS_TOKEN, self._position, "(")
+            tok = SyntaxToken(SyntaxKind.OPEN_PARENTHESIS_TOKEN, self._position,
+                              "(")
             self._position += 1
             return tok
         elif self._current() == ")":
-            tok = SyntaxToken(SyntaxKind.CLOSE_PARENTHESIS_TOKEN, self._position, ")")
+            tok = SyntaxToken(SyntaxKind.CLOSE_PARENTHESIS_TOKEN,
+                              self._position, ")")
             self._position += 1
             return tok
         else:

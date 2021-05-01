@@ -1,26 +1,27 @@
-from minsk_compiler.syntax_tree import SyntaxTree
-from minsk_compiler.evaluator import Evaluator
-from minsk_compiler.syntax_token import SyntaxToken
-from minsk_compiler.syntax_node import SyntaxNode
-from colored import fg, attr
+from rich.console import Console
+from rich.style import Style
 
+from minsk_compiler.code_analysis.evaluator import Evaluator
+from minsk_compiler.code_analysis.syntax.syntax_node import SyntaxNode
+from minsk_compiler.code_analysis.syntax.syntax_token import SyntaxToken
+from minsk_compiler.code_analysis.syntax.syntax_tree import SyntaxTree
 
 show_tree = False
+console = Console()
+pretty_indent_style = Style(color="grey35")
 
 
 def pretty_print(node: SyntaxNode, indent: str = "", is_last: bool = True):
-    print(fg(240), end="")
-    print(indent, end="")
+    console.print(indent, end="", style=pretty_indent_style)
     if is_last:
-        print("\\..", end="")
+        console.print("\\..", end="", style=pretty_indent_style)
     else:
-        print("+..", end="")
-    print(attr(0), end="")
-    print(node.kind(), end="")
+        console.print("+..", end="", style=pretty_indent_style)
+    console.print(node.kind(), end="")
     if isinstance(node, SyntaxToken) and node.value is not None:
-        print(f" {node.value}", end="")
+        console.print(f" {node.value}", end="", style="bright_magenta")
 
-    print()
+    console.print()
 
     if is_last:
         indent += "   "
@@ -44,19 +45,20 @@ while True:
     if line == "#showTree":
         show_tree = not show_tree
         if show_tree:
-            print("Showing parse trees")
+            console.print("Showing parse trees", style="blue")
         else:
-            print("Hiding parse trees")
+            console.print("Hiding parse trees", style="blue")
+        continue
+    elif line == "#cls":
+        console.clear()
         continue
 
     syntax_tree = SyntaxTree.parse(line)
     if show_tree:
         pretty_print(syntax_tree.root)
     if len(syntax_tree.diagnostics) > 0:
-        print(fg(124), end="")
         for diagnostic in syntax_tree.diagnostics:
-            print(diagnostic)
-        print(attr(0), end="")
+            console.print(diagnostic, style="red")
     else:
         e = Evaluator(syntax_tree.root)
         result = e.evaluate()

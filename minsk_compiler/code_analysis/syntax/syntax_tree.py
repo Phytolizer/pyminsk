@@ -1,7 +1,8 @@
 from typing import List, Tuple
-from minsk_compiler.expression_syntax import ExpressionSyntax
-from minsk_compiler.syntax_token import SyntaxToken
-from minsk_compiler.parser import Parser
+
+from minsk_compiler.code_analysis.parser import Parser
+from minsk_compiler.code_analysis.syntax.expression_syntax import ExpressionSyntax
+from minsk_compiler.code_analysis.syntax.syntax_token import SyntaxToken
 
 
 class SyntaxTree:
@@ -10,10 +11,10 @@ class SyntaxTree:
     end_of_file_token: SyntaxToken
 
     def __init__(
-        self,
-        diagnostics: List[str],
-        root: ExpressionSyntax,
-        end_of_file_token: SyntaxToken,
+            self,
+            diagnostics: List[str],
+            root: ExpressionSyntax,
+            end_of_file_token: SyntaxToken,
     ):
         self.diagnostics = tuple(diagnostics)
         self.root = root

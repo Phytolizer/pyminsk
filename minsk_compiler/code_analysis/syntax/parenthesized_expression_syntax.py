@@ -1,8 +1,9 @@
 from typing import Iterable
-from minsk_compiler.expression_syntax import ExpressionSyntax
-from minsk_compiler.syntax_token import SyntaxToken
-from minsk_compiler.syntax_kind import SyntaxKind
-from minsk_compiler.syntax_node import SyntaxNode
+
+from minsk_compiler.code_analysis.syntax.expression_syntax import ExpressionSyntax
+from minsk_compiler.code_analysis.syntax.syntax_kind import SyntaxKind
+from minsk_compiler.code_analysis.syntax.syntax_node import SyntaxNode
+from minsk_compiler.code_analysis.syntax.syntax_token import SyntaxToken
 
 
 class ParenthesizedExpressionSyntax(ExpressionSyntax):
@@ -11,10 +12,10 @@ class ParenthesizedExpressionSyntax(ExpressionSyntax):
     close_parenthesis_token: SyntaxToken
 
     def __init__(
-        self,
-        open_parenthesis_token: SyntaxToken,
-        expression: ExpressionSyntax,
-        close_parenthesis_token: SyntaxToken,
+            self,
+            open_parenthesis_token: SyntaxToken,
+            expression: ExpressionSyntax,
+            close_parenthesis_token: SyntaxToken,
     ):
         self.open_parenthesis_token = open_parenthesis_token
         self.expression = expression

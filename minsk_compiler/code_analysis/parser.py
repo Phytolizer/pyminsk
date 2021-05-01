@@ -1,11 +1,12 @@
-from minsk_compiler.parenthesized_expression_syntax import ParenthesizedExpressionSyntax
-from minsk_compiler.expression_syntax import ExpressionSyntax
-from minsk_compiler.binary_expression_syntax import BinaryExpressionSyntax
-from minsk_compiler.literal_expression_syntax import LiteralExpressionSyntax
-from minsk_compiler.syntax_token import SyntaxToken
 from typing import List, Tuple
-from minsk_compiler.syntax_kind import SyntaxKind
-from minsk_compiler.lexer import Lexer
+
+from minsk_compiler.code_analysis.lexer import Lexer
+from minsk_compiler.code_analysis.syntax.binary_expression_syntax import BinaryExpressionSyntax
+from minsk_compiler.code_analysis.syntax.expression_syntax import ExpressionSyntax
+from minsk_compiler.code_analysis.syntax.literal_expression_syntax import LiteralExpressionSyntax
+from minsk_compiler.code_analysis.syntax.parenthesized_expression_syntax import ParenthesizedExpressionSyntax
+from minsk_compiler.code_analysis.syntax.syntax_kind import SyntaxKind
+from minsk_compiler.code_analysis.syntax.syntax_token import SyntaxToken
 
 
 class Parser:
@@ -19,7 +20,8 @@ class Parser:
         tokens: List[SyntaxToken] = []
         while True:
             token = lexer.next_token()
-            if token.kind() not in (SyntaxKind.BAD_TOKEN, SyntaxKind.WHITESPACE_TOKEN):
+            if token.kind() not in (
+                    SyntaxKind.BAD_TOKEN, SyntaxKind.WHITESPACE_TOKEN):
                 tokens.append(token)
             if token.kind() == SyntaxKind.END_OF_FILE_TOKEN:
                 break
@@ -63,8 +65,8 @@ class Parser:
         left = self._parse_factor()
 
         while (
-            self._current().kind() == SyntaxKind.PLUS_TOKEN
-            or self._current().kind() == SyntaxKind.MINUS_TOKEN
+                self._current().kind() == SyntaxKind.PLUS_TOKEN
+                or self._current().kind() == SyntaxKind.MINUS_TOKEN
         ):
             operator_token = self._next_token()
             right = self._parse_factor()
@@ -76,8 +78,8 @@ class Parser:
         left = self._parse_primary_expression()
 
         while (
-            self._current().kind() == SyntaxKind.STAR_TOKEN
-            or self._current().kind() == SyntaxKind.SLASH_TOKEN
+                self._current().kind() == SyntaxKind.STAR_TOKEN
+                or self._current().kind() == SyntaxKind.SLASH_TOKEN
         ):
             operator_token = self._next_token()
             right = self._parse_primary_expression()

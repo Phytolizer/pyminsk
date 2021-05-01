@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Iterable
-from minsk_compiler.syntax_kind import SyntaxKind
+
+from minsk_compiler.code_analysis.syntax.syntax_kind import SyntaxKind
 
 
 class SyntaxNode(ABC):
