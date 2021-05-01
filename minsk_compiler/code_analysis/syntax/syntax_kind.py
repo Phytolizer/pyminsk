@@ -4,8 +4,11 @@ from stringcase import pascalcase, lowercase
 
 
 class SyntaxKind(Enum):
+    # Special tokens
     END_OF_FILE_TOKEN = auto()
     BAD_TOKEN = auto()
+
+    # Regular tokens
     NUMBER_TOKEN = auto()
     WHITESPACE_TOKEN = auto()
     PLUS_TOKEN = auto()
@@ -15,6 +18,7 @@ class SyntaxKind(Enum):
     OPEN_PARENTHESIS_TOKEN = auto()
     CLOSE_PARENTHESIS_TOKEN = auto()
 
+    # Expression nodes
     LITERAL_EXPRESSION = auto()
     BINARY_EXPRESSION = auto()
     PARENTHESIZED_EXPRESSION = auto()

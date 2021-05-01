@@ -16,7 +16,6 @@ class Parser:
 
     def __init__(self, text: str):
         lexer = Lexer(text)
-        token = None
         tokens: List[SyntaxToken] = []
         while True:
             token = lexer.next_token()
@@ -93,5 +92,5 @@ class Parser:
             expression = self._parse_expression()
             right = self._match_token(SyntaxKind.CLOSE_PARENTHESIS_TOKEN)
             return ParenthesizedExpressionSyntax(left, expression, right)
-        literal_token = self._match_token(SyntaxKind.NUMBER_TOKEN)
-        return LiteralExpressionSyntax(literal_token)
+        number_token = self._match_token(SyntaxKind.NUMBER_TOKEN)
+        return LiteralExpressionSyntax(number_token)
