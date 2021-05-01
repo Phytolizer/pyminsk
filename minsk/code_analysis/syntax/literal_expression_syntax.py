@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Sequence, Any
 
 from minsk.code_analysis.syntax.expression_syntax import ExpressionSyntax
@@ -6,8 +7,10 @@ from minsk.code_analysis.syntax.syntax_node import SyntaxNode
 from minsk.code_analysis.syntax.syntax_token import SyntaxToken
 
 
+@dataclass
 class LiteralExpressionSyntax(ExpressionSyntax):
     literal_token: SyntaxToken
+    value: Any
 
     def __init__(self, literal_token: SyntaxToken, value: Any = None):
         if value is None:

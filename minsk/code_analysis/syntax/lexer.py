@@ -1,4 +1,3 @@
-from minsk.code_analysis.diagnostic import Diagnostic
 from minsk.code_analysis.diagnostic_bag import DiagnosticBag
 from minsk.code_analysis.syntax import syntax_facts
 from minsk.code_analysis.syntax.syntax_kind import SyntaxKind
@@ -90,18 +89,19 @@ class Lexer:
             self._position += 1
             return tok
         elif self._current() == "(":
-            tok = SyntaxToken(SyntaxKind.OPEN_PARENTHESIS_TOKEN, self._position,
-                              "(")
+            tok = SyntaxToken(SyntaxKind.OPEN_PARENTHESIS_TOKEN, self._position, "(")
             self._position += 1
             return tok
         elif self._current() == ")":
-            tok = SyntaxToken(SyntaxKind.CLOSE_PARENTHESIS_TOKEN,
-                              self._position, ")")
+            tok = SyntaxToken(SyntaxKind.CLOSE_PARENTHESIS_TOKEN, self._position, ")")
             self._position += 1
             return tok
         elif self._current() == "!":
-            tok = SyntaxToken(SyntaxKind.BANG_TOKEN,
-                              self._position, "!")
+            tok = SyntaxToken(SyntaxKind.BANG_TOKEN, self._position, "!")
+            self._position += 1
+            return tok
+        elif self._current() == "=":
+            tok = SyntaxToken(SyntaxKind.EQUALS_TOKEN, self._position, "=")
             self._position += 1
             return tok
         else:

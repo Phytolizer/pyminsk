@@ -1,5 +1,6 @@
 from typing import cast, Any
 
+from minsk.code_analysis.binding.bound_assignment_expression import BoundAssignmentExpression
 from minsk.code_analysis.binding.bound_binary_expression import BoundBinaryExpression
 from minsk.code_analysis.binding.bound_binary_operator_kind import BoundBinaryOperatorKind
 from minsk.code_analysis.binding.bound_expression import BoundExpression
@@ -7,12 +8,15 @@ from minsk.code_analysis.binding.bound_literal_expression import BoundLiteralExp
 from minsk.code_analysis.binding.bound_node_kind import BoundNodeKind
 from minsk.code_analysis.binding.bound_unary_expression import BoundUnaryExpression
 from minsk.code_analysis.binding.bound_unary_operator_kind import BoundUnaryOperatorKind
+from minsk.code_analysis.binding.bound_variable_expression import BoundVariableExpression
 
 
 class Evaluator:
+    _variables: dict[str, Any]
     _root: BoundExpression
 
-    def __init__(self, root: BoundExpression):
+    def __init__(self, root: BoundExpression, variables):
+        self._variables = variables
         self._root = root
 
     def evaluate(self) -> Any:
@@ -22,6 +26,14 @@ class Evaluator:
         if root.kind() == BoundNodeKind.LITERAL_EXPRESSION:
             root = cast(BoundLiteralExpression, root)
             return root.value
+        elif root.kind() == BoundNodeKind.VARIABLE_EXPRESSION:
+            root = cast(BoundVariableExpression, root)
+            return self._variables[root.name]
+        elif root.kind() == BoundNodeKind.ASSIGNMENT_EXPRESSION:
+            root = cast(BoundAssignmentExpression, root)
+            value = self._evaluate_expression(root.expression)
+            self._variables[root.name] = value
+            return value
         elif root.kind() == BoundNodeKind.UNARY_EXPRESSION:
             root = cast(BoundUnaryExpression, root)
             operand = self._evaluate_expression(root.operand)

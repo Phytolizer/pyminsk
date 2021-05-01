@@ -1,3 +1,5 @@
+from typing import Any
+
 from rich.console import Console
 from rich.style import Style
 
@@ -9,6 +11,7 @@ from minsk.code_analysis.syntax.syntax_tree import SyntaxTree
 show_tree = False
 console = Console()
 pretty_indent_style = Style(color="grey35")
+variables: dict[str, Any] = dict()
 
 
 def pretty_print(node: SyntaxNode, indent: str = "", is_last: bool = True):
@@ -58,7 +61,7 @@ while True:
 
     syntax_tree = SyntaxTree.parse(line)
     compilation = Compilation(syntax_tree)
-    result = compilation.evaluate()
+    result = compilation.evaluate(variables)
     diagnostics = result.diagnostics
 
     if show_tree:

@@ -1,8 +1,10 @@
 from minsk.code_analysis.diagnostic_bag import DiagnosticBag
+from minsk.code_analysis.syntax.assignment_expression_syntax import AssignmentExpressionSyntax
 from minsk.code_analysis.syntax.binary_expression_syntax import BinaryExpressionSyntax
 from minsk.code_analysis.syntax.expression_syntax import ExpressionSyntax
 from minsk.code_analysis.syntax.lexer import Lexer
 from minsk.code_analysis.syntax.literal_expression_syntax import LiteralExpressionSyntax
+from minsk.code_analysis.syntax.name_expression_syntax import NameExpressionSyntax
 from minsk.code_analysis.syntax.parenthesized_expression_syntax import ParenthesizedExpressionSyntax
 from minsk.code_analysis.syntax.syntax_facts import get_unary_operator_precedence, get_binary_operator_precedence
 from minsk.code_analysis.syntax.syntax_kind import SyntaxKind
@@ -56,12 +58,24 @@ class Parser:
         end_of_file_token = self._match_token(SyntaxKind.END_OF_FILE_TOKEN)
         return self.diagnostics, expression, end_of_file_token
 
-    def _parse_expression(self, parent_precedence: int = 0) -> ExpressionSyntax:
+    def _parse_expression(self) -> ExpressionSyntax:
+        return self._parse_assignment_expression()
+
+    def _parse_assignment_expression(self) -> ExpressionSyntax:
+        if self._peek(0).kind() == SyntaxKind.IDENTIFIER_TOKEN and self._peek(1).kind() == SyntaxKind.EQUALS_TOKEN:
+            identifier_token = self._next_token()
+            operator_token = self._next_token()
+            right = self._parse_assignment_expression()
+            return AssignmentExpressionSyntax(identifier_token, operator_token, right)
+
+        return self._parse_binary_expression()
+
+    def _parse_binary_expression(self, parent_precedence: int = 0) -> ExpressionSyntax:
         unary_operator_precedence = get_unary_operator_precedence(self._current().kind())
         left: ExpressionSyntax
         if unary_operator_precedence != 0 and unary_operator_precedence >= parent_precedence:
             operator_token = self._next_token()
-            operand = self._parse_expression(unary_operator_precedence)
+            operand = self._parse_binary_expression(unary_operator_precedence)
             left = UnaryExpressionSyntax(operator_token, operand)
         else:
             left = self._parse_primary_expression()
@@ -71,7 +85,7 @@ class Parser:
                 break
 
             operator_token = self._next_token()
-            right = self._parse_expression(precedence)
+            right = self._parse_binary_expression(precedence)
             left = BinaryExpressionSyntax(left, operator_token, right)
 
         return left
@@ -86,6 +100,9 @@ class Parser:
             keyword_token = self._next_token()
             value = keyword_token.kind() == SyntaxKind.TRUE_KEYWORD
             return LiteralExpressionSyntax(keyword_token, value)
+        elif self._current().kind() == SyntaxKind.IDENTIFIER_TOKEN:
+            identifier_token = self._next_token()
+            return NameExpressionSyntax(identifier_token)
         else:
             number_token = self._match_token(SyntaxKind.NUMBER_TOKEN)
             return LiteralExpressionSyntax(number_token)

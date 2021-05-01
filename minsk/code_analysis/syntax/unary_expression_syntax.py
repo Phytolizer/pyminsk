@@ -1,4 +1,5 @@
 from collections import Sequence
+from dataclasses import dataclass
 
 from minsk.code_analysis.syntax.expression_syntax import ExpressionSyntax
 from minsk.code_analysis.syntax.syntax_kind import SyntaxKind
@@ -6,10 +7,10 @@ from minsk.code_analysis.syntax.syntax_node import SyntaxNode
 from minsk.code_analysis.syntax.syntax_token import SyntaxToken
 
 
+@dataclass
 class UnaryExpressionSyntax(ExpressionSyntax):
-    def __init__(self, operator_token: SyntaxToken, operand: ExpressionSyntax):
-        self.operator_token = operator_token
-        self.operand = operand
+    operator_token: SyntaxToken
+    operand: ExpressionSyntax
 
     def kind(self) -> SyntaxKind:
         return SyntaxKind.UNARY_EXPRESSION

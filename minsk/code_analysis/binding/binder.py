@@ -1,24 +1,30 @@
-from typing import cast
+from typing import cast, Any
 
+from minsk.code_analysis.binding.bound_assignment_expression import BoundAssignmentExpression
 from minsk.code_analysis.binding.bound_binary_expression import BoundBinaryExpression
 from minsk.code_analysis.binding.bound_binary_operator import BoundBinaryOperator
 from minsk.code_analysis.binding.bound_expression import BoundExpression
 from minsk.code_analysis.binding.bound_literal_expression import BoundLiteralExpression
 from minsk.code_analysis.binding.bound_unary_expression import BoundUnaryExpression
 from minsk.code_analysis.binding.bound_unary_operator import BoundUnaryOperator
+from minsk.code_analysis.binding.bound_variable_expression import BoundVariableExpression
 from minsk.code_analysis.diagnostic_bag import DiagnosticBag
+from minsk.code_analysis.syntax.assignment_expression_syntax import AssignmentExpressionSyntax
 from minsk.code_analysis.syntax.binary_expression_syntax import BinaryExpressionSyntax
 from minsk.code_analysis.syntax.expression_syntax import ExpressionSyntax
 from minsk.code_analysis.syntax.literal_expression_syntax import LiteralExpressionSyntax
+from minsk.code_analysis.syntax.name_expression_syntax import NameExpressionSyntax
 from minsk.code_analysis.syntax.parenthesized_expression_syntax import ParenthesizedExpressionSyntax
 from minsk.code_analysis.syntax.syntax_kind import SyntaxKind
 from minsk.code_analysis.syntax.unary_expression_syntax import UnaryExpressionSyntax
 
 
 class Binder:
+    _variables: dict[str, Any]
     diagnostics: DiagnosticBag
 
-    def __init__(self):
+    def __init__(self, variables: dict[str, Any]):
+        self._variables = variables
         self.diagnostics = DiagnosticBag()
 
     def bind_expression(self, syntax: ExpressionSyntax) -> BoundExpression:
@@ -30,6 +36,10 @@ class Binder:
             return self._bind_binary_expression(cast(BinaryExpressionSyntax, syntax))
         elif syntax.kind() == SyntaxKind.PARENTHESIZED_EXPRESSION:
             return self._bind_parenthesized_expression(cast(ParenthesizedExpressionSyntax, syntax))
+        elif syntax.kind() == SyntaxKind.NAME_EXPRESSION:
+            return self._bind_name_expression(cast(NameExpressionSyntax, syntax))
+        elif syntax.kind() == SyntaxKind.ASSIGNMENT_EXPRESSION:
+            return self._bind_assignment_expression(cast(AssignmentExpressionSyntax, syntax))
         else:
             raise Exception(f"unexpected syntax {syntax.kind()}")
 
@@ -61,3 +71,30 @@ class Binder:
 
     def _bind_parenthesized_expression(self, syntax: ParenthesizedExpressionSyntax) -> BoundExpression:
         return self.bind_expression(syntax.expression)
+
+    def _bind_name_expression(self, syntax: NameExpressionSyntax) -> BoundExpression:
+        name = syntax.identifier_token.text
+        try:
+            value = self._variables[name]
+        except KeyError:
+            self.diagnostics.report_undefined_name(syntax.identifier_token.span, name)
+            return BoundLiteralExpression(0)
+
+        ty = type(value)
+        return BoundVariableExpression(name, ty)
+
+    def _bind_assignment_expression(self, syntax: AssignmentExpressionSyntax) -> BoundExpression:
+        variable = syntax.identifier_token.text
+        bound_expression = self.bind_expression(syntax.expression)
+
+        default_value: Any
+        if bound_expression.type() == int:
+            default_value = 0
+        elif bound_expression.type() == bool:
+            default_value = False
+        else:
+            raise Exception(f"unsupported variable type: {bound_expression.type().__name__}")
+
+        self._variables[variable] = default_value
+
+        return BoundAssignmentExpression(variable, bound_expression)

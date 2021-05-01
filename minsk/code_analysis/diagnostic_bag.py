@@ -49,3 +49,7 @@ class DiagnosticBag(Collection[Diagnostic], Addable):
         message = (f"binary operator '{operator_text}' is not defined for types {left_type.__name__} and "
                    f"{right_type.__name__}")
         self._report(span, message)
+
+    def report_undefined_name(self, span: TextSpan, name: str):
+        message = f"variable '{name}' doesn't exist"
+        self._report(span, message)

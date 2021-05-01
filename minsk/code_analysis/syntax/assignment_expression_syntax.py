@@ -8,13 +8,13 @@ from minsk.code_analysis.syntax.syntax_token import SyntaxToken
 
 
 @dataclass
-class ParenthesizedExpressionSyntax(ExpressionSyntax):
-    open_parenthesis_token: SyntaxToken
+class AssignmentExpressionSyntax(ExpressionSyntax):
+    identifier_token: SyntaxToken
+    equals_token: SyntaxToken
     expression: ExpressionSyntax
-    close_parenthesis_token: SyntaxToken
 
     def kind(self) -> SyntaxKind:
-        return SyntaxKind.PARENTHESIZED_EXPRESSION
+        return SyntaxKind.ASSIGNMENT_EXPRESSION
 
     def children(self) -> Sequence["SyntaxNode"]:
-        return self.open_parenthesis_token, self.expression, self.close_parenthesis_token
+        return self.identifier_token, self.equals_token, self.expression

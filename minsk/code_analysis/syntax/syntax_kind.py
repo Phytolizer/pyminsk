@@ -23,6 +23,7 @@ class SyntaxKind(Enum):
     PIPE_PIPE_TOKEN = auto()
     EQUALS_EQUALS_TOKEN = auto()
     BANG_EQUALS_TOKEN = auto()
+    EQUALS_TOKEN = auto()
 
     # Keywords
     TRUE_KEYWORD = auto()
@@ -33,6 +34,8 @@ class SyntaxKind(Enum):
     UNARY_EXPRESSION = auto()
     BINARY_EXPRESSION = auto()
     PARENTHESIZED_EXPRESSION = auto()
+    NAME_EXPRESSION = auto()
+    ASSIGNMENT_EXPRESSION = auto()
 
     def __str__(self) -> str:
         return pascalcase(lowercase(self.name))
