@@ -62,6 +62,14 @@ while True:
         pretty_print(syntax_tree.root)
     if len(diagnostics) > 0:
         for diagnostic in diagnostics:
+            prefix = line[0:diagnostic.span.start]
+            error = line[diagnostic.span.start:diagnostic.span.end()]
+            suffix = line[diagnostic.span.end():]
+
+            console.print(f"    {prefix}", end="", highlight=False)
+            console.print(error, style="red", end="", highlight=False)
+            console.print(suffix, highlight=False)
+
             console.print(str(diagnostic), style="red", highlight=False)
     else:
         console.print(result.value, style="magenta")
