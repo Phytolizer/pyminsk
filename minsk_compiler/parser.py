@@ -1,5 +1,4 @@
 from minsk_compiler.parenthesized_expression_syntax import ParenthesizedExpressionSyntax
-from minsk_compiler.syntax_tree import SyntaxTree
 from minsk_compiler.expression_syntax import ExpressionSyntax
 from minsk_compiler.binary_expression_syntax import BinaryExpressionSyntax
 from minsk_compiler.literal_expression_syntax import LiteralExpressionSyntax
@@ -52,10 +51,10 @@ class Parser:
         )
         return SyntaxToken(kind, self._current().position, "")
 
-    def parse(self) -> SyntaxTree:
+    def parse(self) -> Tuple[List[str], ExpressionSyntax, SyntaxToken]:
         expression = self._parse_expression()
         end_of_file_token = self._match_token(SyntaxKind.END_OF_FILE_TOKEN)
-        return SyntaxTree(self.diagnostics, expression, end_of_file_token)
+        return (self.diagnostics, expression, end_of_file_token)
 
     def _parse_expression(self) -> ExpressionSyntax:
         return self._parse_term()

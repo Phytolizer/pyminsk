@@ -1,3 +1,4 @@
+from minsk_compiler.syntax_tree import SyntaxTree
 from minsk_compiler.evaluator import Evaluator
 from minsk_compiler.syntax_token import SyntaxToken
 from minsk_compiler.syntax_node import SyntaxNode
@@ -38,8 +39,7 @@ while True:
     except EOFError:
         break
 
-    parser = Parser(line)
-    syntax_tree = parser.parse()
+    syntax_tree = SyntaxTree.parse(line)
     pretty_print(syntax_tree.root)
     if len(syntax_tree.diagnostics) > 0:
         print(fg(124), end="")
