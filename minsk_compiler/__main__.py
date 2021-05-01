@@ -2,8 +2,10 @@ from minsk_compiler.syntax_tree import SyntaxTree
 from minsk_compiler.evaluator import Evaluator
 from minsk_compiler.syntax_token import SyntaxToken
 from minsk_compiler.syntax_node import SyntaxNode
-from minsk_compiler.parser import Parser
 from colored import fg, attr
+
+
+show_tree = False
 
 
 def pretty_print(node: SyntaxNode, indent: str = "", is_last: bool = True):
@@ -39,8 +41,17 @@ while True:
     except EOFError:
         break
 
+    if line == "#showTree":
+        show_tree = not show_tree
+        if show_tree:
+            print("Showing parse trees")
+        else:
+            print("Hiding parse trees")
+        continue
+
     syntax_tree = SyntaxTree.parse(line)
-    pretty_print(syntax_tree.root)
+    if show_tree:
+        pretty_print(syntax_tree.root)
     if len(syntax_tree.diagnostics) > 0:
         print(fg(124), end="")
         for diagnostic in syntax_tree.diagnostics:
