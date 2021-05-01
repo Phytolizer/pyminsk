@@ -1,4 +1,4 @@
-from typing import Iterable
+from typing import Iterable, Sequence
 
 from minsk_compiler.code_analysis.syntax.expression_syntax import \
     ExpressionSyntax
@@ -21,5 +21,5 @@ class BinaryExpressionSyntax(ExpressionSyntax):
     def kind(self) -> SyntaxKind:
         return SyntaxKind.BINARY_EXPRESSION
 
-    def children(self) -> Iterable["SyntaxNode"]:
-        return (self.left, self.operator_token, self.right)
+    def children(self) -> Sequence["SyntaxNode"]:
+        return self.left, self.operator_token, self.right

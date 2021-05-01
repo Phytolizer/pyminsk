@@ -1,4 +1,4 @@
-from typing import Iterable
+from typing import Sequence
 
 from minsk_compiler.code_analysis.syntax.expression_syntax import ExpressionSyntax
 from minsk_compiler.code_analysis.syntax.syntax_kind import SyntaxKind
@@ -15,5 +15,5 @@ class LiteralExpressionSyntax(ExpressionSyntax):
     def kind(self) -> SyntaxKind:
         return SyntaxKind.LITERAL_EXPRESSION
 
-    def children(self) -> Iterable["SyntaxNode"]:
+    def children(self) -> Sequence["SyntaxNode"]:
         return self.literal_token,

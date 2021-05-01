@@ -1,4 +1,4 @@
-from typing import Any, Iterable
+from typing import Any, Sequence
 
 from minsk_compiler.code_analysis.syntax.syntax_kind import SyntaxKind
 from minsk_compiler.code_analysis.syntax.syntax_node import SyntaxNode
@@ -25,5 +25,5 @@ class SyntaxToken(SyntaxNode):
     def kind(self) -> SyntaxKind:
         return self._kind
 
-    def children(self) -> Iterable["SyntaxNode"]:
+    def children(self) -> Sequence["SyntaxNode"]:
         return ()

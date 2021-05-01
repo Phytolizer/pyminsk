@@ -1,4 +1,4 @@
-from typing import Iterable
+from typing import Sequence
 
 from minsk_compiler.code_analysis.syntax.expression_syntax import ExpressionSyntax
 from minsk_compiler.code_analysis.syntax.syntax_kind import SyntaxKind
@@ -24,7 +24,7 @@ class ParenthesizedExpressionSyntax(ExpressionSyntax):
     def kind(self) -> SyntaxKind:
         return SyntaxKind.PARENTHESIZED_EXPRESSION
 
-    def children(self) -> Iterable["SyntaxNode"]:
+    def children(self) -> Sequence["SyntaxNode"]:
         return (
             self.open_parenthesis_token,
             self.expression,
