@@ -8,3 +8,10 @@ def get_binary_operator_precedence(kind: SyntaxKind) -> int:
         return 1
     else:
         return 0
+
+
+def get_unary_operator_precedence(kind: SyntaxKind) -> int:
+    if kind in (SyntaxKind.PLUS_TOKEN, SyntaxKind.MINUS_TOKEN):
+        return 3
+    else:
+        return 0

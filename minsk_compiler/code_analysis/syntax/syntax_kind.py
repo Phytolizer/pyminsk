@@ -20,6 +20,7 @@ class SyntaxKind(Enum):
 
     # Expression nodes
     LITERAL_EXPRESSION = auto()
+    UNARY_EXPRESSION = auto()
     BINARY_EXPRESSION = auto()
     PARENTHESIZED_EXPRESSION = auto()
 
