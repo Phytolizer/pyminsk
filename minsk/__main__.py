@@ -2,6 +2,7 @@ from rich.console import Console
 from rich.style import Style
 
 from minsk.code_analysis.binding.binder import Binder
+from minsk.code_analysis.compilation import Compilation
 from minsk.code_analysis.evaluator import Evaluator
 from minsk.code_analysis.syntax.syntax_node import SyntaxNode
 from minsk.code_analysis.syntax.syntax_token import SyntaxToken
@@ -55,9 +56,9 @@ while True:
         continue
 
     syntax_tree = SyntaxTree.parse(line)
-    binder = Binder()
-    bound_expression = binder.bind_expression(syntax_tree.root)
-    diagnostics = syntax_tree.diagnostics + tuple(binder.diagnostics)
+    compilation = Compilation(syntax_tree)
+    result = compilation.evaluate()
+    diagnostics = result.diagnostics
 
     if show_tree:
         pretty_print(syntax_tree.root)
@@ -65,6 +66,4 @@ while True:
         for diagnostic in diagnostics:
             console.print(diagnostic, style="red")
     else:
-        e = Evaluator(bound_expression)
-        result = e.evaluate()
-        print(result)
+        console.print(result.value, style="magenta")
