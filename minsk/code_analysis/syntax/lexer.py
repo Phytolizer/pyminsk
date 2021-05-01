@@ -1,8 +1,8 @@
 from typing import List
 
-from minsk_compiler.code_analysis.syntax import syntax_facts
-from minsk_compiler.code_analysis.syntax.syntax_kind import SyntaxKind
-from minsk_compiler.code_analysis.syntax.syntax_token import SyntaxToken
+from minsk.code_analysis.syntax import syntax_facts
+from minsk.code_analysis.syntax.syntax_kind import SyntaxKind
+from minsk.code_analysis.syntax.syntax_token import SyntaxToken
 
 
 class Lexer:
@@ -54,7 +54,7 @@ class Lexer:
                 self._next()
 
             text = self._text[start:self._position]
-            kind = syntax_facts.get_keyword_kind(text)
+            kind = syntax_facts.keyword_kind(text)
             return SyntaxToken(kind, start, text)
         elif self._current() == "&" and self._lookahead() == "&":
             tok = SyntaxToken(SyntaxKind.AMPERSAND_AMPERSAND_TOKEN, self._position, "&&")

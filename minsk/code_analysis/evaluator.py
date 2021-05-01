@@ -1,12 +1,12 @@
 from typing import cast, Any
 
-from minsk_compiler.code_analysis.binding.bound_binary_expression import BoundBinaryExpression
-from minsk_compiler.code_analysis.binding.bound_binary_operator_kind import BoundBinaryOperatorKind
-from minsk_compiler.code_analysis.binding.bound_expression import BoundExpression
-from minsk_compiler.code_analysis.binding.bound_literal_expression import BoundLiteralExpression
-from minsk_compiler.code_analysis.binding.bound_node_kind import BoundNodeKind
-from minsk_compiler.code_analysis.binding.bound_unary_expression import BoundUnaryExpression
-from minsk_compiler.code_analysis.binding.bound_unary_operator_kind import BoundUnaryOperatorKind
+from minsk.code_analysis.binding.bound_binary_expression import BoundBinaryExpression
+from minsk.code_analysis.binding.bound_binary_operator_kind import BoundBinaryOperatorKind
+from minsk.code_analysis.binding.bound_expression import BoundExpression
+from minsk.code_analysis.binding.bound_literal_expression import BoundLiteralExpression
+from minsk.code_analysis.binding.bound_node_kind import BoundNodeKind
+from minsk.code_analysis.binding.bound_unary_expression import BoundUnaryExpression
+from minsk.code_analysis.binding.bound_unary_operator_kind import BoundUnaryOperatorKind
 
 
 class Evaluator:

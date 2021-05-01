@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from minsk_compiler.code_analysis.binding.bound_node import BoundNode
+from minsk.code_analysis.binding.bound_node import BoundNode
 
 
 class BoundExpression(BoundNode, ABC):

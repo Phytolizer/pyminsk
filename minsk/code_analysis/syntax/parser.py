@@ -1,15 +1,14 @@
 from typing import List, Tuple
 
-from minsk_compiler.code_analysis.syntax.lexer import Lexer
-from minsk_compiler.code_analysis.syntax.binary_expression_syntax import BinaryExpressionSyntax
-from minsk_compiler.code_analysis.syntax.expression_syntax import ExpressionSyntax
-from minsk_compiler.code_analysis.syntax.literal_expression_syntax import LiteralExpressionSyntax
-from minsk_compiler.code_analysis.syntax.parenthesized_expression_syntax import ParenthesizedExpressionSyntax
-from minsk_compiler.code_analysis.syntax.syntax_facts import get_binary_operator_precedence, \
-    get_unary_operator_precedence
-from minsk_compiler.code_analysis.syntax.syntax_kind import SyntaxKind
-from minsk_compiler.code_analysis.syntax.syntax_token import SyntaxToken
-from minsk_compiler.code_analysis.syntax.unary_expression_syntax import UnaryExpressionSyntax
+from minsk.code_analysis.syntax.expression_syntax import ExpressionSyntax
+from minsk.code_analysis.syntax.lexer import Lexer
+from minsk.code_analysis.syntax.binary_expression_syntax import BinaryExpressionSyntax
+from minsk.code_analysis.syntax.literal_expression_syntax import LiteralExpressionSyntax
+from minsk.code_analysis.syntax.parenthesized_expression_syntax import ParenthesizedExpressionSyntax
+from minsk.code_analysis.syntax.syntax_facts import get_unary_operator_precedence, get_binary_operator_precedence
+from minsk.code_analysis.syntax.syntax_kind import SyntaxKind
+from minsk.code_analysis.syntax.syntax_token import SyntaxToken
+from minsk.code_analysis.syntax.unary_expression_syntax import UnaryExpressionSyntax
 
 
 class Parser:

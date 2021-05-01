@@ -1,7 +1,7 @@
 from typing import Type, Optional, Tuple
 
-from minsk_compiler.code_analysis.binding.bound_unary_operator_kind import BoundUnaryOperatorKind
-from minsk_compiler.code_analysis.syntax.syntax_kind import SyntaxKind
+from minsk.code_analysis.binding.bound_unary_operator_kind import BoundUnaryOperatorKind
+from minsk.code_analysis.syntax.syntax_kind import SyntaxKind
 
 
 class BoundUnaryOperator:

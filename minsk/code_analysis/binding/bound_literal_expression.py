@@ -1,7 +1,7 @@
 from typing import Any
 
-from minsk_compiler.code_analysis.binding.bound_expression import BoundExpression
-from minsk_compiler.code_analysis.binding.bound_node_kind import BoundNodeKind
+from minsk.code_analysis.binding.bound_expression import BoundExpression
+from minsk.code_analysis.binding.bound_node_kind import BoundNodeKind
 
 
 class BoundLiteralExpression(BoundExpression):

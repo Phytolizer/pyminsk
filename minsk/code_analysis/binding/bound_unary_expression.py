@@ -1,6 +1,6 @@
-from minsk_compiler.code_analysis.binding.bound_expression import BoundExpression
-from minsk_compiler.code_analysis.binding.bound_node_kind import BoundNodeKind
-from minsk_compiler.code_analysis.binding.bound_unary_operator import BoundUnaryOperator
+from minsk.code_analysis.binding.bound_expression import BoundExpression
+from minsk.code_analysis.binding.bound_node_kind import BoundNodeKind
+from minsk.code_analysis.binding.bound_unary_operator import BoundUnaryOperator
 
 
 class BoundUnaryExpression(BoundExpression):

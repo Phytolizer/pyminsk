@@ -1,17 +1,17 @@
 from typing import cast, List
 
-from minsk_compiler.code_analysis.binding.bound_binary_expression import BoundBinaryExpression
-from minsk_compiler.code_analysis.binding.bound_binary_operator import BoundBinaryOperator
-from minsk_compiler.code_analysis.binding.bound_expression import BoundExpression
-from minsk_compiler.code_analysis.binding.bound_literal_expression import BoundLiteralExpression
-from minsk_compiler.code_analysis.binding.bound_unary_expression import BoundUnaryExpression
-from minsk_compiler.code_analysis.binding.bound_unary_operator import BoundUnaryOperator
-from minsk_compiler.code_analysis.syntax.binary_expression_syntax import BinaryExpressionSyntax
-from minsk_compiler.code_analysis.syntax.expression_syntax import ExpressionSyntax
-from minsk_compiler.code_analysis.syntax.literal_expression_syntax import LiteralExpressionSyntax
-from minsk_compiler.code_analysis.syntax.parenthesized_expression_syntax import ParenthesizedExpressionSyntax
-from minsk_compiler.code_analysis.syntax.syntax_kind import SyntaxKind
-from minsk_compiler.code_analysis.syntax.unary_expression_syntax import UnaryExpressionSyntax
+from minsk.code_analysis.binding.bound_binary_expression import BoundBinaryExpression
+from minsk.code_analysis.binding.bound_binary_operator import BoundBinaryOperator
+from minsk.code_analysis.binding.bound_expression import BoundExpression
+from minsk.code_analysis.binding.bound_literal_expression import BoundLiteralExpression
+from minsk.code_analysis.binding.bound_unary_expression import BoundUnaryExpression
+from minsk.code_analysis.binding.bound_unary_operator import BoundUnaryOperator
+from minsk.code_analysis.syntax.binary_expression_syntax import BinaryExpressionSyntax
+from minsk.code_analysis.syntax.expression_syntax import ExpressionSyntax
+from minsk.code_analysis.syntax.literal_expression_syntax import LiteralExpressionSyntax
+from minsk.code_analysis.syntax.parenthesized_expression_syntax import ParenthesizedExpressionSyntax
+from minsk.code_analysis.syntax.syntax_kind import SyntaxKind
+from minsk.code_analysis.syntax.unary_expression_syntax import UnaryExpressionSyntax
 
 
 class Binder:
