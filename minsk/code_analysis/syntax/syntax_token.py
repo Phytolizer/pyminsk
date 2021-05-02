@@ -6,14 +6,14 @@ from minsk.code_analysis.text_span import TextSpan
 
 
 class SyntaxToken(SyntaxNode):
-    span: TextSpan
+    _span: TextSpan
     _kind: SyntaxKind
     position: int
     text: str
 
     def __init__(self, kind: SyntaxKind, position: int, text: str,
                  value: Any = None):
-        self.span = TextSpan(position, len(text))
+        self._span = TextSpan(position, len(text))
         self._kind = kind
         self.position = position
         self.text = text
@@ -30,3 +30,6 @@ class SyntaxToken(SyntaxNode):
 
     def children(self) -> Sequence["SyntaxNode"]:
         return ()
+
+    def span(self) -> TextSpan:
+        return self._span

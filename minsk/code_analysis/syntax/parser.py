@@ -52,7 +52,7 @@ class Parser:
         if self._current().kind() == kind:
             return self._next_token()
 
-        self.diagnostics.report_unexpected_token(self._current().span, self._current().kind(), kind)
+        self.diagnostics.report_unexpected_token(self._current().span(), self._current().kind(), kind)
         return SyntaxToken(kind, self._current().position, "")
 
     def parse(self) -> tuple[DiagnosticBag, ExpressionSyntax, SyntaxToken]:

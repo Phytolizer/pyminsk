@@ -54,7 +54,7 @@ class Binder:
         bound_operand = self.bind_expression(syntax.operand)
         bound_operator = BoundUnaryOperator.bind(syntax.operator_token.kind(), bound_operand.type())
         if bound_operator is None:
-            self.diagnostics.report_undefined_unary_operator(syntax.operator_token.span, syntax.operator_token.text,
+            self.diagnostics.report_undefined_unary_operator(syntax.operator_token.span(), syntax.operator_token.text,
                                                              bound_operand.type())
             return bound_operand
         return BoundUnaryExpression(bound_operator, bound_operand)
@@ -65,7 +65,7 @@ class Binder:
         bound_operator = BoundBinaryOperator.bind(syntax.operator_token.kind(), bound_left.type(),
                                                   bound_right.type())
         if bound_operator is None:
-            self.diagnostics.report_undefined_binary_operator(syntax.operator_token.span, syntax.operator_token.text,
+            self.diagnostics.report_undefined_binary_operator(syntax.operator_token.span(), syntax.operator_token.text,
                                                               bound_left.type(), bound_right.type())
             return bound_left
         return BoundBinaryExpression(bound_left, bound_operator, bound_right)
@@ -77,7 +77,7 @@ class Binder:
         name = syntax.identifier_token.text
         variable = next(filter(lambda v: v.name == name, self._variables.keys()), None)
         if variable is None:
-            self.diagnostics.report_undefined_name(syntax.identifier_token.span, name)
+            self.diagnostics.report_undefined_name(syntax.identifier_token.span(), name)
             return BoundLiteralExpression(0)
 
         return BoundVariableExpression(variable)
