@@ -92,17 +92,32 @@ class Parser:
 
     def _parse_primary_expression(self) -> ExpressionSyntax:
         if self._current().kind() == SyntaxKind.OPEN_PARENTHESIS_TOKEN:
-            left = self._next_token()
-            expression = self._parse_expression()
-            right = self._match_token(SyntaxKind.CLOSE_PARENTHESIS_TOKEN)
-            return ParenthesizedExpressionSyntax(left, expression, right)
+            return self._parse_parenthesized_expression()
         elif self._current().kind() in (SyntaxKind.FALSE_KEYWORD, SyntaxKind.TRUE_KEYWORD):
-            keyword_token = self._next_token()
-            value = keyword_token.kind() == SyntaxKind.TRUE_KEYWORD
-            return LiteralExpressionSyntax(keyword_token, value)
+            return self._parse_boolean_literal()
         elif self._current().kind() == SyntaxKind.IDENTIFIER_TOKEN:
-            identifier_token = self._next_token()
-            return NameExpressionSyntax(identifier_token)
+            return self._parse_name_expression()
         else:
-            number_token = self._match_token(SyntaxKind.NUMBER_TOKEN)
-            return LiteralExpressionSyntax(number_token)
+            return self._parse_number_literal()
+
+    def _parse_parenthesized_expression(self):
+        left = self._match_token(SyntaxKind.OPEN_PARENTHESIS_TOKEN)
+        expression = self._parse_expression()
+        right = self._match_token(SyntaxKind.CLOSE_PARENTHESIS_TOKEN)
+        return ParenthesizedExpressionSyntax(left, expression, right)
+
+    def _parse_number_literal(self):
+        number_token = self._match_token(SyntaxKind.NUMBER_TOKEN)
+        return LiteralExpressionSyntax(number_token)
+
+    def _parse_boolean_literal(self):
+        is_true = self._current().kind() == SyntaxKind.TRUE_KEYWORD
+        if is_true:
+            keyword_token = self._match_token(SyntaxKind.TRUE_KEYWORD)
+        else:
+            keyword_token = self._match_token(SyntaxKind.FALSE_KEYWORD)
+        return LiteralExpressionSyntax(keyword_token, is_true)
+
+    def _parse_name_expression(self):
+        identifier_token = self._match_token(SyntaxKind.IDENTIFIER_TOKEN)
+        return NameExpressionSyntax(identifier_token)
