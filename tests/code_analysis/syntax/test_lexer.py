@@ -3,32 +3,20 @@ from typing import Iterable
 
 import pytest
 
+from minsk.code_analysis.syntax import syntax_facts
 from minsk.code_analysis.syntax.syntax_kind import SyntaxKind
 from minsk.code_analysis.syntax.syntax_tree import SyntaxTree
 
 
 def get_tokens() -> Iterable[tuple[SyntaxKind, str]]:
-    return (
-        (SyntaxKind.PLUS_TOKEN, "+"),
-        (SyntaxKind.MINUS_TOKEN, "-"),
-        (SyntaxKind.STAR_TOKEN, "*"),
-        (SyntaxKind.SLASH_TOKEN, "/"),
-        (SyntaxKind.OPEN_PARENTHESIS_TOKEN, "("),
-        (SyntaxKind.CLOSE_PARENTHESIS_TOKEN, ")"),
-        (SyntaxKind.BANG_TOKEN, "!"),
-        (SyntaxKind.AMPERSAND_AMPERSAND_TOKEN, "&&"),
-        (SyntaxKind.PIPE_PIPE_TOKEN, "||"),
-        (SyntaxKind.EQUALS_EQUALS_TOKEN, "=="),
-        (SyntaxKind.BANG_EQUALS_TOKEN, "!="),
-        (SyntaxKind.EQUALS_TOKEN, "="),
-        (SyntaxKind.TRUE_KEYWORD, "true"),
-        (SyntaxKind.FALSE_KEYWORD, "false"),
-
+    fixed_tokens = filter(lambda t: t[1] is not None, map(lambda k: (k, syntax_facts.text_for(k)), SyntaxKind))
+    dynamic_tokens = (
         (SyntaxKind.IDENTIFIER_TOKEN, "a"),
         (SyntaxKind.IDENTIFIER_TOKEN, "abc"),
         (SyntaxKind.NUMBER_TOKEN, "1"),
         (SyntaxKind.NUMBER_TOKEN, "123"),
     )
+    return itertools.chain(fixed_tokens, dynamic_tokens)
 
 
 def get_separators() -> Iterable[tuple[SyntaxKind, str]]:
@@ -71,6 +59,12 @@ def requires_separator(t1_kind: SyntaxKind, t2_kind: SyntaxKind) -> bool:
 
 
 class TestLexer:
+    def test_tests_all_tokens(self):
+        token_kinds = set(filter(lambda k: k.name.endswith("TOKEN") or k.name.endswith("KEYWORD"), SyntaxKind)) - {
+            SyntaxKind.BAD_TOKEN, SyntaxKind.END_OF_FILE_TOKEN}
+        tested_token_kinds = set(map(lambda t: t[0], itertools.chain(get_tokens(), get_separators())))
+        assert token_kinds - tested_token_kinds == set()
+
     @pytest.mark.parametrize("kind,text", itertools.chain(get_tokens(), get_separators()))
     def test_lexes_token(self, kind: SyntaxKind, text: str):
         tokens = tuple(SyntaxTree.parse_tokens(text))
