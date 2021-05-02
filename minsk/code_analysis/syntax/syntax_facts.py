@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Iterable
 
 from minsk.code_analysis.syntax.syntax_kind import SyntaxKind
 
@@ -63,3 +63,8 @@ def text_for(kind: SyntaxKind) -> Optional[str]:
         return "false"
     elif kind == SyntaxKind.TRUE_KEYWORD:
         return "true"
+    return None
+
+
+def binary_operators() -> Iterable[SyntaxKind]:
+    return filter(lambda k: get_binary_operator_precedence(k) != 0, SyntaxKind)
