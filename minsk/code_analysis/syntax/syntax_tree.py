@@ -44,8 +44,8 @@ class SyntaxTree:
         _pretty_print(writer, is_console, self.root)
 
 
-def _pretty_write(writer: Union[TextIO, Console], color: Optional[str], text: str, is_console: bool):
-    if is_console:
+def _pretty_write(writer: Union[TextIO, Console], color: Optional[str], text: str, should_color: bool):
+    if should_color:
         writer = cast(Console, writer)
         writer.print(text, end="", style=color, highlight=False)
     else:
@@ -53,21 +53,21 @@ def _pretty_write(writer: Union[TextIO, Console], color: Optional[str], text: st
         writer.write(text)
 
 
-def _pretty_print(writer: Union[TextIO, Console], is_console: bool, node: SyntaxNode, indent: str = "",
+def _pretty_print(writer: Union[TextIO, Console], with_colors: bool, node: SyntaxNode, indent: str = "",
                   is_last: bool = True):
-    _pretty_write(writer, "grey35", indent, is_console)
+    _pretty_write(writer, "grey35", indent, with_colors)
     if is_last:
-        _pretty_write(writer, "grey35", "\\..", is_console)
+        _pretty_write(writer, "grey35", "\\..", with_colors)
     else:
-        _pretty_write(writer, "grey35", "+..", is_console)
-    _pretty_write(writer, None, str(node.kind()), is_console)
+        _pretty_write(writer, "grey35", "+..", with_colors)
+    _pretty_write(writer, None, str(node.kind()), with_colors)
     if isinstance(node, SyntaxToken):
         if node.value is None:
-            _pretty_write(writer, "green", f" '{node.text}'", is_console)
+            _pretty_write(writer, "green", f" '{node.text}'", with_colors)
         else:
-            _pretty_write(writer, "magenta", f" {node.value}", is_console)
+            _pretty_write(writer, "magenta", f" {node.value}", with_colors)
 
-    _pretty_write(writer, None, "\n", is_console)
+    _pretty_write(writer, None, "\n", with_colors)
 
     if is_last:
         indent += "   "
@@ -79,4 +79,4 @@ def _pretty_print(writer: Union[TextIO, Console], is_console: bool, node: Syntax
     except IndexError:
         return
     for child in node.children():
-        _pretty_print(writer, is_console, child, indent, child == last)
+        _pretty_print(writer, with_colors, child, indent, child == last)
