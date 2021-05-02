@@ -12,14 +12,17 @@ from minsk.code_analysis.syntax.syntax_facts import get_unary_operator_precedenc
 from minsk.code_analysis.syntax.syntax_kind import SyntaxKind
 from minsk.code_analysis.syntax.syntax_token import SyntaxToken
 from minsk.code_analysis.syntax.unary_expression_syntax import UnaryExpressionSyntax
+from minsk.code_analysis.text.source_text import SourceText
 
 
 class Parser:
+    _text: SourceText
     _position: int
     _tokens: Sequence[SyntaxToken]
     diagnostics: DiagnosticBag
 
-    def __init__(self, text: str):
+    def __init__(self, text: SourceText):
+        self._text = text
         lexer = Lexer(text)
         tokens: list[SyntaxToken] = []
         while True:
@@ -55,10 +58,10 @@ class Parser:
         self.diagnostics.report_unexpected_token(self._current().span(), self._current().kind(), kind)
         return SyntaxToken(kind, self._current().position, "")
 
-    def parse(self) -> tuple[DiagnosticBag, ExpressionSyntax, SyntaxToken]:
+    def parse(self) -> tuple[SourceText, DiagnosticBag, ExpressionSyntax, SyntaxToken]:
         expression = self._parse_expression()
         end_of_file_token = self._match_token(SyntaxKind.END_OF_FILE_TOKEN)
-        return self.diagnostics, expression, end_of_file_token
+        return self._text, self.diagnostics, expression, end_of_file_token
 
     def _parse_expression(self) -> ExpressionSyntax:
         return self._parse_assignment_expression()

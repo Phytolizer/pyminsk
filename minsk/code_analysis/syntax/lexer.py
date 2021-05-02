@@ -4,18 +4,19 @@ from minsk.code_analysis.diagnostic_bag import DiagnosticBag
 from minsk.code_analysis.syntax import syntax_facts
 from minsk.code_analysis.syntax.syntax_kind import SyntaxKind
 from minsk.code_analysis.syntax.syntax_token import SyntaxToken
+from minsk.code_analysis.text.source_text import SourceText
 from minsk.code_analysis.text.text_span import TextSpan
 
 
 class Lexer:
-    _text: str
+    _text: SourceText
     _start: int
     _position: int
     _kind: SyntaxKind
     _value: Any
     diagnostics: DiagnosticBag
 
-    def __init__(self, text: str):
+    def __init__(self, text: SourceText):
         self._text = text
         self._start = 0
         self._position = 0

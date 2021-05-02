@@ -9,29 +9,37 @@ from minsk.code_analysis.syntax.parser import Parser
 from minsk.code_analysis.syntax.syntax_kind import SyntaxKind
 from minsk.code_analysis.syntax.syntax_node import SyntaxNode
 from minsk.code_analysis.syntax.syntax_token import SyntaxToken
+from minsk.code_analysis.text.source_text import SourceText
 
 
 class SyntaxTree:
+    text: SourceText
     diagnostics: DiagnosticBag
     root: ExpressionSyntax
     end_of_file_token: SyntaxToken
 
     def __init__(
             self,
+            source_text: SourceText,
             diagnostics: DiagnosticBag,
             root: ExpressionSyntax,
             end_of_file_token: SyntaxToken,
     ):
+        self.text = source_text
         self.diagnostics = diagnostics
         self.root = root
         self.end_of_file_token = end_of_file_token
 
     @staticmethod
-    def parse(text: str) -> "SyntaxTree":
+    def parse(text: Union[str, SourceText]) -> "SyntaxTree":
+        if isinstance(text, str):
+            text = SourceText.create_from(text)
         return SyntaxTree(*Parser(text).parse())
 
     @staticmethod
-    def parse_tokens(text: str) -> Iterable[SyntaxToken]:
+    def parse_tokens(text: Union[str, SourceText]) -> Iterable[SyntaxToken]:
+        if isinstance(text, str):
+            text = SourceText.create_from(text)
         lexer = Lexer(text)
         while True:
             token = lexer.lex()
