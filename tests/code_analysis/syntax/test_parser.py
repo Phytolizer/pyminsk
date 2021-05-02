@@ -93,3 +93,39 @@ def test_binary_expression_honors_precedence(op1: SyntaxKind, op2: SyntaxKind):
             e.assert_token(op2, op2_text)
             e.assert_node(SyntaxKind.NAME_EXPRESSION)
             e.assert_token(SyntaxKind.IDENTIFIER_TOKEN, "c")
+
+
+def get_unary_operator_pairs_data() -> Iterable[tuple[SyntaxKind, SyntaxKind]]:
+    for op1 in syntax_facts.unary_operators():
+        for op2 in syntax_facts.binary_operators():
+            yield op1, op2
+
+
+@pytest.mark.parametrize("unary_kind,binary_kind", get_unary_operator_pairs_data())
+def test_unary_expression_honors_precedences(unary_kind: SyntaxKind, binary_kind: SyntaxKind):
+    unary_precedence = syntax_facts.get_unary_operator_precedence(unary_kind)
+    binary_precedence = syntax_facts.get_binary_operator_precedence(binary_kind)
+    unary_text = syntax_facts.text_for(unary_kind)
+    binary_text = syntax_facts.text_for(binary_kind)
+    text = f"{unary_text} a {binary_text} b"
+    expression = SyntaxTree.parse(text).root
+    if unary_precedence >= binary_precedence:
+        with AssertingEnumerator(expression) as e:
+            e.assert_node(SyntaxKind.BINARY_EXPRESSION)
+            e.assert_node(SyntaxKind.UNARY_EXPRESSION)
+            e.assert_token(unary_kind, unary_text)
+            e.assert_node(SyntaxKind.NAME_EXPRESSION)
+            e.assert_token(SyntaxKind.IDENTIFIER_TOKEN, "a")
+            e.assert_token(binary_kind, binary_text)
+            e.assert_node(SyntaxKind.NAME_EXPRESSION)
+            e.assert_token(SyntaxKind.IDENTIFIER_TOKEN, "b")
+    else:
+        with AssertingEnumerator(expression) as e:
+            e.assert_node(SyntaxKind.UNARY_EXPRESSION)
+            e.assert_token(unary_kind, unary_text)
+            e.assert_node(SyntaxKind.BINARY_EXPRESSION)
+            e.assert_node(SyntaxKind.NAME_EXPRESSION)
+            e.assert_token(SyntaxKind.IDENTIFIER_TOKEN, "a")
+            e.assert_token(binary_kind, binary_text)
+            e.assert_node(SyntaxKind.NAME_EXPRESSION)
+            e.assert_token(SyntaxKind.IDENTIFIER_TOKEN, "b")

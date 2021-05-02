@@ -68,3 +68,7 @@ def text_for(kind: SyntaxKind) -> Optional[str]:
 
 def binary_operators() -> Iterable[SyntaxKind]:
     return filter(lambda k: get_binary_operator_precedence(k) != 0, SyntaxKind)
+
+
+def unary_operators():
+    return filter(lambda k: get_unary_operator_precedence(k) != 0, SyntaxKind)
