@@ -1,3 +1,5 @@
+from typing import Any
+
 from minsk.code_analysis.diagnostic_bag import DiagnosticBag
 from minsk.code_analysis.syntax import syntax_facts
 from minsk.code_analysis.syntax.syntax_kind import SyntaxKind
@@ -7,11 +9,18 @@ from minsk.code_analysis.text_span import TextSpan
 
 class Lexer:
     _text: str
+    _start: int
+    _position: int
+    _kind: SyntaxKind
+    _value: Any
     diagnostics: DiagnosticBag
 
     def __init__(self, text: str):
         self._text = text
+        self._start = 0
         self._position = 0
+        self._kind = SyntaxKind.BAD_TOKEN
+        self._value = None
         self.diagnostics = DiagnosticBag()
 
     def _peek(self, offset: int) -> str:
@@ -31,85 +40,79 @@ class Lexer:
         self._position += 1
 
     def lex(self):
-        if self._position >= len(self._text):
-            return SyntaxToken(SyntaxKind.END_OF_FILE_TOKEN, self._position, "")
+        self._start = self._position
+        self._kind = SyntaxKind.BAD_TOKEN
+        self._value = None
         if self._current().isdigit():
-            start = self._position
-            while self._current().isdigit():
-                self._next()
-
-            text = self._text[start:self._position]
-            value = int(text)
-            return SyntaxToken(SyntaxKind.NUMBER_TOKEN, start, text, value)
+            self._read_number()
         elif self._current().isspace():
-            start = self._position
-            while self._current().isspace():
-                self._next()
-
-            text = self._text[start:self._position]
-            return SyntaxToken(SyntaxKind.WHITESPACE_TOKEN, start, text)
+            self._read_whitespace()
         elif self._current().isalpha():
-            start = self._position
-            while self._current().isalpha():
-                self._next()
-
-            text = self._text[start:self._position]
-            kind = syntax_facts.keyword_kind(text)
-            return SyntaxToken(kind, start, text)
+            self._read_identifier_or_keyword()
         elif self._current() == "&" and self._lookahead() == "&":
-            tok = SyntaxToken(SyntaxKind.AMPERSAND_AMPERSAND_TOKEN, self._position, "&&")
+            self._kind = SyntaxKind.AMPERSAND_AMPERSAND_TOKEN
             self._position += 2
-            return tok
         elif self._current() == "|" and self._lookahead() == "|":
-            tok = SyntaxToken(SyntaxKind.PIPE_PIPE_TOKEN, self._position, "||")
+            self._kind = SyntaxKind.PIPE_PIPE_TOKEN
             self._position += 2
-            return tok
         elif self._current() == "=" and self._lookahead() == "=":
-            tok = SyntaxToken(SyntaxKind.EQUALS_EQUALS_TOKEN, self._position, "==")
+            self._kind = SyntaxKind.EQUALS_EQUALS_TOKEN
             self._position += 2
-            return tok
         elif self._current() == "!" and self._lookahead() == "=":
-            tok = SyntaxToken(SyntaxKind.BANG_EQUALS_TOKEN, self._position, "!=")
+            self._kind = SyntaxKind.BANG_EQUALS_TOKEN
             self._position += 2
-            return tok
+        elif self._current() == "\0":
+            self._kind = SyntaxKind.END_OF_FILE_TOKEN
+            self._position += 1
         elif self._current() == "+":
-            tok = SyntaxToken(SyntaxKind.PLUS_TOKEN, self._position, "+")
+            self._kind = SyntaxKind.PLUS_TOKEN
             self._position += 1
-            return tok
         elif self._current() == "-":
-            tok = SyntaxToken(SyntaxKind.MINUS_TOKEN, self._position, "-")
+            self._kind = SyntaxKind.MINUS_TOKEN
             self._position += 1
-            return tok
         elif self._current() == "/":
-            tok = SyntaxToken(SyntaxKind.SLASH_TOKEN, self._position, "/")
+            self._kind = SyntaxKind.SLASH_TOKEN
             self._position += 1
-            return tok
         elif self._current() == "*":
-            tok = SyntaxToken(SyntaxKind.STAR_TOKEN, self._position, "*")
+            self._kind = SyntaxKind.STAR_TOKEN
             self._position += 1
-            return tok
         elif self._current() == "(":
-            tok = SyntaxToken(SyntaxKind.OPEN_PARENTHESIS_TOKEN, self._position, "(")
+            self._kind = SyntaxKind.OPEN_PARENTHESIS_TOKEN
             self._position += 1
-            return tok
         elif self._current() == ")":
-            tok = SyntaxToken(SyntaxKind.CLOSE_PARENTHESIS_TOKEN, self._position, ")")
+            self._kind = SyntaxKind.CLOSE_PARENTHESIS_TOKEN
             self._position += 1
-            return tok
         elif self._current() == "!":
-            tok = SyntaxToken(SyntaxKind.BANG_TOKEN, self._position, "!")
+            self._kind = SyntaxKind.BANG_TOKEN
             self._position += 1
-            return tok
         elif self._current() == "=":
-            tok = SyntaxToken(SyntaxKind.EQUALS_TOKEN, self._position, "=")
+            self._kind = SyntaxKind.EQUALS_TOKEN
             self._position += 1
-            return tok
         else:
             self.diagnostics.report_bad_character(
                 TextSpan(self._position, 1), self._current()
             )
-            tok = SyntaxToken(
-                SyntaxKind.BAD_TOKEN, self._position, self._text[self._position]
-            )
             self._position += 1
-            return tok
+        text = syntax_facts.text_for(self._kind)
+        if text is None:
+            text = self._text[self._start:self._position]
+        return SyntaxToken(self._kind, self._start, text, self._value)
+
+    def _read_identifier_or_keyword(self):
+        while self._current().isalpha():
+            self._next()
+        text = self._text[self._start:self._position]
+        self._kind = syntax_facts.keyword_kind(text)
+
+    def _read_whitespace(self):
+        while self._current().isspace():
+            self._next()
+        self._kind = SyntaxKind.WHITESPACE_TOKEN
+
+    def _read_number(self):
+        while self._current().isdigit():
+            self._next()
+
+        self._kind = SyntaxKind.NUMBER_TOKEN
+        text = self._text[self._start:self._position]
+        self._value = int(text)
