@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from minsk.code_analysis.diagnostic_bag import DiagnosticBag
 from minsk.code_analysis.syntax.assignment_expression_syntax import AssignmentExpressionSyntax
 from minsk.code_analysis.syntax.binary_expression_syntax import BinaryExpressionSyntax
@@ -14,7 +16,7 @@ from minsk.code_analysis.syntax.unary_expression_syntax import UnaryExpressionSy
 
 class Parser:
     _position: int
-    _tokens: tuple[SyntaxToken, ...]
+    _tokens: Sequence[SyntaxToken]
     diagnostics: DiagnosticBag
 
     def __init__(self, text: str):
@@ -29,7 +31,7 @@ class Parser:
                 break
 
         self._position = 0
-        self._tokens = tuple(tokens)
+        self._tokens = tokens
         self.diagnostics = lexer.diagnostics
 
     def _peek(self, offset: int) -> SyntaxToken:
