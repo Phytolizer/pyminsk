@@ -5,7 +5,7 @@ from minsk.code_analysis.syntax.expression_syntax import ExpressionSyntax
 from minsk.code_analysis.syntax.syntax_kind import SyntaxKind
 from minsk.code_analysis.syntax.syntax_node import SyntaxNode
 from minsk.code_analysis.syntax.syntax_token import SyntaxToken
-from minsk.code_analysis.text_span import TextSpan
+from minsk.code_analysis.text.text_span import TextSpan
 
 
 @dataclass

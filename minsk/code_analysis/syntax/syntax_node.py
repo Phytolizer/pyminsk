@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Sequence
 
 from minsk.code_analysis.syntax.syntax_kind import SyntaxKind
-from minsk.code_analysis.text_span import TextSpan
+from minsk.code_analysis.text.text_span import TextSpan
 
 
 class SyntaxNode(ABC):

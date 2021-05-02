@@ -4,7 +4,7 @@ from minsk.code_analysis.diagnostic_bag import DiagnosticBag
 from minsk.code_analysis.syntax import syntax_facts
 from minsk.code_analysis.syntax.syntax_kind import SyntaxKind
 from minsk.code_analysis.syntax.syntax_token import SyntaxToken
-from minsk.code_analysis.text_span import TextSpan
+from minsk.code_analysis.text.text_span import TextSpan
 
 
 class Lexer:

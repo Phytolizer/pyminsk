@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from minsk.code_analysis.text_span import TextSpan
+from minsk.code_analysis.text.text_span import TextSpan
 
 
 @dataclass

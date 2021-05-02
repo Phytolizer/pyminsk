@@ -2,7 +2,7 @@ from typing import Collection, Iterator, Type
 
 from minsk.code_analysis.diagnostic import Diagnostic
 from minsk.code_analysis.syntax.syntax_kind import SyntaxKind
-from minsk.code_analysis.text_span import TextSpan
+from minsk.code_analysis.text.text_span import TextSpan
 from tools.addable import Addable
 
 
