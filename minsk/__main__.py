@@ -1,47 +1,15 @@
+import sys
 from typing import Any
 
 from rich.console import Console
-from rich.style import Style
 
 from minsk.code_analysis.compilation import Compilation
-from minsk.code_analysis.syntax.syntax_node import SyntaxNode
-from minsk.code_analysis.syntax.syntax_token import SyntaxToken
 from minsk.code_analysis.syntax.syntax_tree import SyntaxTree
 from minsk.code_analysis.variable_symbol import VariableSymbol
 
 show_tree = False
 console = Console()
-pretty_indent_style = Style(color="grey35")
 variables: dict[VariableSymbol, Any] = dict()
-
-
-def pretty_print(node: SyntaxNode, indent: str = "", is_last: bool = True):
-    console.print(indent, end="", style=pretty_indent_style, highlight=False)
-    if is_last:
-        console.print("\\..", end="", style=pretty_indent_style, highlight=False)
-    else:
-        console.print("+..", end="", style=pretty_indent_style, highlight=False)
-    console.print(node.kind(), end="", highlight=False)
-    if isinstance(node, SyntaxToken):
-        if node.value is None:
-            console.print(f" '{node.text}'", end="", style="bright_green", highlight=False)
-        else:
-            console.print(f" {node.value}", end="", style="bright_magenta", highlight=False)
-
-    console.print()
-
-    if is_last:
-        indent += "   "
-    else:
-        indent += "|  "
-
-    try:
-        last = node.children()[-1]
-    except IndexError:
-        return
-    for child in node.children():
-        pretty_print(child, indent, child == last)
-
 
 while True:
     try:
@@ -66,7 +34,7 @@ while True:
     diagnostics = result.diagnostics
 
     if show_tree:
-        pretty_print(syntax_tree.root)
+        syntax_tree.write_to(console, True)
     if len(diagnostics) > 0:
         for diagnostic in diagnostics:
             prefix = line[0:diagnostic.span.start]

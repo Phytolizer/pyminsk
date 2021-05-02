@@ -1,10 +1,13 @@
-from typing import Iterable
+from typing import Iterable, TextIO, Union, Optional, cast
+
+from rich.console import Console
 
 from minsk.code_analysis.diagnostic_bag import DiagnosticBag
 from minsk.code_analysis.syntax.expression_syntax import ExpressionSyntax
 from minsk.code_analysis.syntax.lexer import Lexer
 from minsk.code_analysis.syntax.parser import Parser
 from minsk.code_analysis.syntax.syntax_kind import SyntaxKind
+from minsk.code_analysis.syntax.syntax_node import SyntaxNode
 from minsk.code_analysis.syntax.syntax_token import SyntaxToken
 
 
@@ -36,3 +39,44 @@ class SyntaxTree:
                 break
 
             yield token
+
+    def write_to(self, writer: Union[TextIO, Console], is_console: bool):
+        _pretty_print(writer, is_console, self.root)
+
+
+def _pretty_write(writer: Union[TextIO, Console], color: Optional[str], text: str, is_console: bool):
+    if is_console:
+        writer = cast(Console, writer)
+        writer.print(text, end="", style=color, highlight=False)
+    else:
+        writer = cast(TextIO, writer)
+        writer.write(text)
+
+
+def _pretty_print(writer: Union[TextIO, Console], is_console: bool, node: SyntaxNode, indent: str = "",
+                  is_last: bool = True):
+    _pretty_write(writer, "grey35", indent, is_console)
+    if is_last:
+        _pretty_write(writer, "grey35", "\\..", is_console)
+    else:
+        _pretty_write(writer, "grey35", "+..", is_console)
+    _pretty_write(writer, None, str(node.kind()), is_console)
+    if isinstance(node, SyntaxToken):
+        if node.value is None:
+            _pretty_write(writer, "green", f" '{node.text}'", is_console)
+        else:
+            _pretty_write(writer, "magenta", f" {node.value}", is_console)
+
+    _pretty_write(writer, None, "\n", is_console)
+
+    if is_last:
+        indent += "   "
+    else:
+        indent += "|  "
+
+    try:
+        last = node.children()[-1]
+    except IndexError:
+        return
+    for child in node.children():
+        _pretty_print(writer, is_console, child, indent, child == last)
