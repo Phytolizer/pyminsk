@@ -16,7 +16,7 @@ class TextLine:
         self.length_including_line_break = length_including_line_break
 
     def __repr__(self):
-        return f"TextLine({repr(self.source_text)}, {self.start}, {self.length}, {self.length_including_line_break}"
+        return f"TextLine({repr(self.source_text)}, {self.start}, {self.length}, {self.length_including_line_break})"
 
     @property
     def span(self) -> TextSpan:
@@ -61,7 +61,9 @@ class SourceText:
             elif start > position:
                 lower = index + 1
 
-        return lower + 1
+        if lower - 1 < 0:
+            return 0
+        return lower - 1
 
     @staticmethod
     def _parse_lines(source_text: "SourceText", text: str) -> Sequence[TextLine]:
@@ -80,7 +82,7 @@ class SourceText:
                 position += line_break_width
                 line_start = position
 
-        if position > line_start:
+        if position >= line_start:
             result.append(SourceText._add_line(source_text, position, line_start, 0))
 
         return result
