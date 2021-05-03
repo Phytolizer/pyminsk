@@ -14,9 +14,9 @@ text_builder = ""
 
 while True:
     if len(text_builder) == 0:
-        console.print("> ", style="yellow", end="")
+        console.print("› ", style="yellow", end="")
     else:
-        console.print("| ", style="yellow", end="")
+        console.print("⋯ ", style="yellow", end="")
     try:
         line = input()
     except EOFError:
