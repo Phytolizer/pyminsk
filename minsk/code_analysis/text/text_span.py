@@ -12,3 +12,6 @@ class TextSpan:
     @staticmethod
     def from_bounds(start, end) -> "TextSpan":
         return TextSpan(start, end - start)
+
+    def __repr__(self):
+        return f"TextSpan(start={self.start}, length={self.length})"

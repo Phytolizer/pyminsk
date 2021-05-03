@@ -15,6 +15,9 @@ class TextLine:
         self.length = length
         self.length_including_line_break = length_including_line_break
 
+    def __repr__(self):
+        return f"TextLine({repr(self.source_text)}, {self.start}, {self.length}, {self.length_including_line_break}"
+
     @property
     def span(self) -> TextSpan:
         return TextSpan(self.start, self.length)
@@ -22,6 +25,10 @@ class TextLine:
     @property
     def span_including_line_break(self) -> TextSpan:
         return TextSpan(self.start, self.length_including_line_break)
+
+    @property
+    def end(self):
+        return self.start + self.length
 
 
 class SourceText:
@@ -82,8 +89,7 @@ class SourceText:
     def _add_line(source_text: "SourceText", position: int, line_start: int, line_break_width: int):
         line_length = position - line_start
         line_length_including_line_break = line_length + line_break_width
-        line = TextLine(source_text, line_start, line_length, line_length_including_line_break)
-        return line
+        return TextLine(source_text, line_start, line_length, line_length_including_line_break)
 
     @staticmethod
     def _get_line_break_width(text: str, position: int) -> int:
@@ -102,6 +108,8 @@ class SourceText:
         return self.text
 
     def __getitem__(self, item):
+        if isinstance(item, TextSpan):
+            return self.text[item.start:item.end()]
         return self.text[item]
 
     def __len__(self):
