@@ -61,7 +61,7 @@ class SourceText:
             elif start > position:
                 lower = index + 1
 
-        return lower
+        return lower + 1
 
     @staticmethod
     def _parse_lines(source_text: "SourceText", text: str) -> Sequence[TextLine]:
