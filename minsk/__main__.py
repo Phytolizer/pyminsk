@@ -61,9 +61,6 @@ while True:
             prefix_span = TextSpan.from_bounds(source_line.start, diagnostic.span.start)
             suffix_span = TextSpan.from_bounds(diagnostic.span.end(), source_line.end)
 
-            print(repr(source_line))
-            print(repr(prefix_span))
-
             prefix = text[prefix_span]
             error = text[diagnostic.span.start:diagnostic.span.end()]
             suffix = text[suffix_span]
