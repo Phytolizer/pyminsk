@@ -80,7 +80,7 @@ class SourceText:
                 position += line_break_width
                 line_start = position
 
-        if position >= line_start:
+        if position > line_start:
             result.append(SourceText._add_line(source_text, position, line_start, 0))
 
         return result
